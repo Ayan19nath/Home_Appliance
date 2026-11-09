@@ -1,0 +1,117 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 8647-EA1B
+D:\PROJECTREAL\HOME_APPLIANCE\SRC
+¦   App.css
+¦   App.jsx
+¦   index.css
+¦   main.jsx
+¦   
++---assets
+¦   ¦   hero.png
+¦   ¦   logo.jpeg
+¦   ¦   react.svg
+¦   ¦   vite.svg
+¦   ¦   
+¦   +---images
+¦   ¦       Airconditioners.jpeg
+¦   ¦       Airpurifiers.jpeg
+¦   ¦       Category_offer.jpeg
+¦   ¦       ForgotAppliance.jpeg
+¦   ¦       HomeHubLogo.jpeg
+¦   ¦       kitchenappliances.jpeg
+¦   ¦       login-background.jpeg
+¦   ¦       Microwaves.jpeg
+¦   ¦       order-tracking.jpeg
+¦   ¦       Refrigerators.jpeg
+¦   ¦       slider1.jpeg
+¦   ¦       slider2.jpeg
+¦   ¦       slider3.jpeg
+¦   ¦       slider4.jpeg
+¦   ¦       Smallappliances.jpeg
+¦   ¦       Televisions.jpeg
+¦   ¦       update-password.jpeg
+¦   ¦       Washingmachines.jpeg
+¦   ¦       Waterpurifiers.jpeg
+¦   ¦       
+¦   +---videos
+¦           about-story.mp4
+¦           
++---Components
+¦       CategoriesCard.css
+¦       CategoriesCard.jsx
+¦       CategoryBanner.css
+¦       CategoryBanner.jsx
+¦       Footer.jsx
+¦       HeroSection.jsx
+¦       Navbar.jsx
+¦       ProductCard.jsx
+¦       ProductSection.jsx
+¦       QuantityControl.jsx
+¦       ServiceBar.jsx
+¦       ShopHeader.jsx
+¦       ShopProductCard.jsx
+¦       ShopSidebar.jsx
+¦       WishlistCard.jsx
+¦       WishlistContext.jsx
+¦       
++---Context
+¦       CartContext.jsx
+¦       WishlistContext.jsx
+¦       
++---data
+¦       products.js
+¦       
++---Pages
+        About.css
+        About.jsx
+        Addresses.css
+        Addresses.jsx
+        CancelOrder.css
+        CancelOrder.jsx
+        CancelSuccess.css
+        CancelSuccess.jsx
+        Cart.css
+        Cart.jsx
+        Categories.css
+        Categories.jsx
+        ChangePassword.css
+        ChangePassword.jsx
+        Checkout.css
+        Checkout.jsx
+        Contact.css
+        Contact.jsx
+        FAQ.css
+        FAQ.jsx
+        ForgotPassword.css
+        ForgotPassword.jsx
+        Home.jsx
+        Login.css
+        Login.jsx
+        LoginSuccess.css
+        LoginSuccess.jsx
+        Logout.css
+        Logout.jsx
+        Orders.css
+        Orders.jsx
+        OrderSuccess.css
+        OrderSuccess.jsx
+        OrderTracking.css
+        OrderTracking.jsx
+        Policy.css
+        PrivacyPolicy.jsx
+        ProductDetails.css
+        ProductDetails.jsx
+        Profile.css
+        Profile.jsx
+        Register.css
+        Register.jsx
+        ResetPassword.css
+        ResetPassword.jsx
+        ReturnPolicy.jsx
+        Shop.jsx
+        TermsConditions.jsx
+        VerifyOTP.css
+        VerifyOTP.jsx
+        Wishlist.css
+        Wishlist.jsx
+        

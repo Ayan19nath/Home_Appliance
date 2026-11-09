@@ -1,0 +1,1128 @@
+/* =========================================
+   LOGIN SUCCESS PAGE
+========================================= */
+
+.login-success-page {
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 45px 30px;
+
+  box-sizing: border-box;
+
+  background: #eef8ff;
+}
+
+
+/* =========================================
+   BACKGROUND
+========================================= */
+
+.login-success-background {
+  width: 100%;
+  min-height: 800px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 35px;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      rgba(232, 246, 255, 0.55),
+      rgba(232, 246, 255, 0.55)
+    ),
+    url("../assets/images/login-background.jpeg");
+
+  background-size: cover;
+
+  background-position: center;
+
+  background-repeat: no-repeat;
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+========================================= */
+
+.login-success-container {
+  width: 100%;
+  max-width: 1220px;
+
+  min-height: 700px;
+
+  display: grid;
+
+  grid-template-columns:
+    0.95fr 1.05fr;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.96
+  );
+
+  border:
+    1px solid #d5e4ed;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 18px 50px
+    rgba(20, 72, 110, 0.15);
+}
+
+
+/* =========================================
+   LEFT SIDE
+========================================= */
+
+.login-success-left {
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff 0%,
+      #f1faff 65%,
+      #e2f4ff 100%
+    );
+
+  border-right:
+    1px solid #d7e5ee;
+}
+
+
+.login-success-left::before {
+  content: "";
+
+  position: absolute;
+
+  width: 330px;
+  height: 330px;
+
+  border-radius: 50%;
+
+  background: #dff3ff;
+
+  left: -170px;
+  bottom: -160px;
+}
+
+
+.login-success-left::after {
+  content: "";
+
+  position: absolute;
+
+  width: 260px;
+  height: 260px;
+
+  border-radius: 50%;
+
+  background: #e8f7ff;
+
+  right: -130px;
+  top: -130px;
+}
+
+
+.success-left-content {
+  position: relative;
+
+  z-index: 2;
+
+  height: 100%;
+
+  padding: 38px 45px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   LOGO
+========================================= */
+
+.success-logo {
+  margin-bottom: 32px;
+}
+
+
+.success-logo a {
+  display: inline-block;
+
+  text-decoration: none;
+}
+
+
+.success-homehub-logo {
+  width: 285px;
+  max-width: 100%;
+
+  height: auto;
+
+  display: block;
+}
+
+
+/* =========================================
+   LEFT HEADING
+========================================= */
+
+.success-left-content h1 {
+  margin: 0 0 10px;
+
+  color: #103d69;
+
+  font-size: 39px;
+
+  line-height: 1.12;
+
+  font-weight: 800;
+}
+
+
+.success-left-content h1 span {
+  display: block;
+
+  color: #148de0;
+}
+
+
+.success-left-description {
+  max-width: 440px;
+
+  margin: 0 0 27px;
+
+  color: #637d92;
+
+  font-size: 17px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   FEATURES
+========================================= */
+
+.success-feature {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin-bottom: 18px;
+}
+
+
+.success-feature-icon {
+  width: 52px;
+  height: 52px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e1f3ff;
+
+  border:
+    1px solid #c7e6f8;
+
+  color: #087bd0;
+}
+
+
+.success-feature h3 {
+  margin: 0 0 3px;
+
+  color: #123e69;
+
+  font-size: 15px;
+
+  font-weight: 750;
+}
+
+
+.success-feature p {
+  margin: 0;
+
+  color: #71879a;
+
+  font-size: 13px;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   APPLIANCE VISUAL
+========================================= */
+
+.success-appliance-visual {
+  position: absolute;
+
+  left: 105px;
+  right: 45px;
+
+  bottom: 8px;
+
+  height: 125px;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 9px;
+
+  opacity: 0.95;
+}
+
+
+/* REFRIGERATOR */
+
+.success-appliance-card.refrigerator {
+  position: relative;
+
+  width: 58px;
+  height: 100px;
+
+  border-radius: 5px 5px 3px 3px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #dce5ea,
+      #f8fbfc,
+      #cbd8df
+    );
+
+  border:
+    1px solid #b8c8d1;
+
+  box-shadow:
+    2px 4px 8px
+    rgba(50, 90, 110, 0.12);
+}
+
+
+.refrigerator::before {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+
+  top: 0;
+
+  width: 1px;
+  height: 100%;
+
+  background: #b8c8d1;
+}
+
+
+.appliance-line {
+  position: absolute;
+
+  top: 50%;
+
+  width: 100%;
+  height: 1px;
+
+  background: #b8c8d1;
+}
+
+
+.appliance-handle {
+  position: absolute;
+
+  right: 7px;
+  top: 22px;
+
+  width: 3px;
+  height: 22px;
+
+  border-radius: 3px;
+
+  background: #8fa3af;
+}
+
+
+/* WASHING MACHINE */
+
+.success-appliance-card.washer {
+  position: relative;
+
+  width: 78px;
+  height: 73px;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eef4f7,
+      #c8d3d9
+    );
+
+  border:
+    1px solid #aebfc9;
+}
+
+
+.washer-door {
+  position: absolute;
+
+  width: 43px;
+  height: 43px;
+
+  border-radius: 50%;
+
+  left: 17px;
+  top: 20px;
+
+  background:
+    radial-gradient(
+      circle,
+      #607c8e 0 35%,
+      #91a7b5 36% 48%,
+      #e6edf0 49% 100%
+    );
+
+  border:
+    2px solid #9babb5;
+}
+
+
+/* TV */
+
+.success-appliance-card.tv {
+  position: relative;
+
+  width: 125px;
+  height: 82px;
+}
+
+
+.tv-screen {
+  width: 125px;
+  height: 70px;
+
+  border-radius: 5px;
+
+  border: 5px solid #253746;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      145deg,
+      #58aee9,
+      #164c7b
+    );
+
+  overflow: hidden;
+}
+
+
+.tv-screen span {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      145deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.22) 41% 43%,
+      transparent 44%
+    );
+}
+
+
+.tv-stand {
+  position: absolute;
+
+  left: 46px;
+  bottom: 0;
+
+  width: 35px;
+  height: 8px;
+
+  background: #273c4b;
+
+  clip-path: polygon(
+    20% 0,
+    80% 0,
+    100% 100%,
+    0 100%
+  );
+}
+
+
+/* MICROWAVE */
+
+.success-appliance-card.microwave {
+  position: relative;
+
+  width: 73px;
+  height: 48px;
+
+  border-radius: 4px;
+
+  background: #2d3c46;
+
+  border: 2px solid #526570;
+}
+
+
+.microwave-screen {
+  position: absolute;
+
+  left: 8px;
+  top: 8px;
+
+  width: 45px;
+  height: 30px;
+
+  border-radius: 3px;
+
+  background: #9bc9df;
+
+  opacity: 0.75;
+}
+
+
+/* PLANT */
+
+.success-appliance-plant {
+  font-size: 47px;
+
+  line-height: 1;
+
+  margin-bottom: 7px;
+}
+
+
+/* =========================================
+   RIGHT SIDE
+========================================= */
+
+.login-success-right {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 55px 55px;
+
+  background: #ffffff;
+}
+
+
+.success-right-content {
+  width: 100%;
+
+  max-width: 610px;
+
+  text-align: center;
+}
+
+
+/* =========================================
+   SUCCESS CHECK
+========================================= */
+
+.success-check-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-bottom: 22px;
+}
+
+
+.success-check-outer {
+  width: 135px;
+  height: 135px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #e0faee;
+}
+
+
+.success-check-inner {
+  width: 91px;
+  height: 91px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #ffffff;
+
+  background: #18a957;
+
+  box-shadow:
+    0 8px 20px
+    rgba(24, 169, 87, 0.20);
+}
+
+
+/* =========================================
+   RIGHT TITLE
+========================================= */
+
+.success-right-content h2 {
+  margin: 0 0 13px;
+
+  color: #102f61;
+
+  font-size: 38px;
+
+  line-height: 1.2;
+
+  font-weight: 800;
+}
+
+
+.success-main-text {
+  margin: 0 0 31px;
+
+  color: #637c91;
+
+  font-size: 17px;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================
+   USER CARD
+========================================= */
+
+.success-user-card {
+  width: 100%;
+
+  min-height: 88px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 14px 17px;
+
+  box-sizing: border-box;
+
+  border:
+    1px solid #cfe4ef;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f2fbff,
+      #e8f8ff
+    );
+
+  text-align: left;
+
+  margin-bottom: 25px;
+}
+
+
+.success-user-icon {
+  width: 57px;
+  height: 57px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #087ed1;
+
+  background: #d8efff;
+}
+
+
+.success-user-info {
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.success-user-info h3 {
+  margin: 0 0 3px;
+
+  color: #123b67;
+
+  font-size: 18px;
+
+  font-weight: 750;
+}
+
+
+.success-user-info p {
+  margin: 0;
+
+  color: #678095;
+
+  font-size: 14px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   ONLINE
+========================================= */
+
+.online-status {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 9px 14px;
+
+  border-radius: 22px;
+
+  background: #e0f8ef;
+
+  color: #15945a;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+.online-dot {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #19a65a;
+}
+
+
+/* =========================================
+   SHOPPING BUTTON
+========================================= */
+
+.success-shopping-btn {
+  width: 100%;
+  height: 56px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #147bd0,
+      #119ce4
+    );
+
+  color: #ffffff;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  margin-bottom: 15px;
+}
+
+
+.success-shopping-btn:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 18px
+    rgba(20, 123, 208, 0.20);
+}
+
+
+/* =========================================
+   ACCOUNT BUTTON
+========================================= */
+
+.success-account-btn {
+  width: 100%;
+  height: 56px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  border:
+    1px solid #2287c8;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #087bc8;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.success-account-btn:hover {
+  background: #f2faff;
+
+  box-shadow:
+    0 4px 12px
+    rgba(30, 110, 160, 0.10);
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1000px) {
+
+  .login-success-page {
+    padding: 25px 20px;
+  }
+
+
+  .login-success-background {
+    padding: 25px;
+  }
+
+
+  .login-success-container {
+    grid-template-columns: 1fr;
+
+    max-width: 720px;
+  }
+
+
+  .login-success-left {
+    border-right: none;
+
+    border-bottom:
+      1px solid #d7e5ee;
+  }
+
+
+  .success-left-content {
+    padding: 40px;
+  }
+
+
+  .success-appliance-visual {
+    position: relative;
+
+    left: auto;
+    right: auto;
+    bottom: auto;
+
+    margin-top: 25px;
+
+    justify-content: center;
+  }
+
+
+  .login-success-right {
+    padding: 45px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+  .login-success-page {
+    padding: 0;
+  }
+
+
+  .login-success-background {
+    min-height: 100vh;
+
+    padding: 15px;
+  }
+
+
+  .login-success-container {
+    min-height: auto;
+
+    border-radius: 10px;
+  }
+
+
+  .success-left-content {
+    padding: 30px 23px;
+  }
+
+
+  .success-logo {
+    margin-bottom: 25px;
+  }
+
+
+  .success-homehub-logo {
+    width: 235px;
+  }
+
+
+  .success-left-content h1 {
+    font-size: 30px;
+  }
+
+
+  .success-left-description {
+    font-size: 15px;
+
+    margin-bottom: 25px;
+  }
+
+
+  .success-feature {
+    gap: 12px;
+
+    margin-bottom: 17px;
+  }
+
+
+  .success-feature-icon {
+    width: 47px;
+    height: 47px;
+  }
+
+
+  .success-feature h3 {
+    font-size: 14px;
+  }
+
+
+  .success-feature p {
+    font-size: 12px;
+  }
+
+
+  .success-appliance-visual {
+    transform: scale(0.85);
+
+    transform-origin: center;
+
+    margin-top: 5px;
+
+    margin-bottom: -15px;
+  }
+
+
+  .login-success-right {
+    padding: 38px 22px;
+  }
+
+
+  .success-check-outer {
+    width: 105px;
+    height: 105px;
+  }
+
+
+  .success-check-inner {
+    width: 72px;
+    height: 72px;
+  }
+
+
+  .success-check-inner svg {
+    width: 45px;
+    height: 45px;
+  }
+
+
+  .success-right-content h2 {
+    font-size: 29px;
+  }
+
+
+  .success-main-text {
+    font-size: 14px;
+  }
+
+
+  .success-user-card {
+    padding: 12px;
+
+    gap: 10px;
+  }
+
+
+  .success-user-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+
+  .success-user-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+
+  .success-user-info h3 {
+    font-size: 15px;
+  }
+
+
+  .success-user-info p {
+    font-size: 12px;
+  }
+
+
+  .online-status {
+    padding: 7px 10px;
+
+    font-size: 11px;
+  }
+
+
+  .success-shopping-btn,
+  .success-account-btn {
+    height: 53px;
+
+    font-size: 14px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+
+  .login-success-background {
+    padding: 9px;
+  }
+
+
+  .success-left-content {
+    padding: 25px 18px;
+  }
+
+
+  .success-homehub-logo {
+    width: 210px;
+  }
+
+
+  .success-left-content h1 {
+    font-size: 27px;
+  }
+
+
+  .success-appliance-visual {
+    transform: scale(0.72);
+
+    margin-top: -5px;
+
+    margin-bottom: -30px;
+  }
+
+
+  .login-success-right {
+    padding: 30px 17px;
+  }
+
+
+  .success-right-content h2 {
+    font-size: 26px;
+  }
+
+
+  .success-user-card {
+    flex-wrap: wrap;
+  }
+
+
+  .online-status {
+    margin-left: 60px;
+  }
+
+}

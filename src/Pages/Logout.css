@@ -1,0 +1,309 @@
+/* ================= LOGOUT PAGE ================= */
+
+.logout-page {
+  min-height: 600px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 55px 20px;
+
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(27, 157, 239, 0.10),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(27, 157, 239, 0.08),
+      transparent 30%
+    ),
+    #f3faff;
+}
+
+/* ================= SECTION ================= */
+
+.logout-section {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+}
+
+/* ================= CARD ================= */
+
+.logout-card {
+  width: min(850px, 100%);
+
+  padding: 55px 45px 60px;
+
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border: 1px solid #d5ebf8;
+  border-radius: 14px;
+
+  box-shadow:
+    0 8px 30px rgba(13, 83, 130, 0.08);
+}
+
+/* ================= ICON ================= */
+
+.logout-icon-wrapper {
+  display: flex;
+  justify-content: center;
+
+  margin-bottom: 30px;
+}
+
+.logout-icon-circle {
+  width: 190px;
+  height: 190px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      #e2f4ff 0%,
+      #d9f0ff 65%,
+      #cdeaff 100%
+    );
+
+  color: #078de8;
+}
+
+.logout-icon-circle svg {
+  stroke-width: 1.8;
+}
+
+/* ================= CONTENT ================= */
+
+.logout-content h1 {
+  margin: 0 0 15px;
+
+  color: #073f78;
+
+  font-size: 42px;
+  font-weight: 700;
+}
+
+.logout-thank-you {
+  margin: 0 0 8px;
+
+  color: #557895;
+
+  font-size: 20px;
+}
+
+.logout-thank-you strong {
+  color: #078ee8;
+}
+
+.logout-message {
+  margin: 0;
+
+  color: #5d7890;
+
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* ================= ACTIONS ================= */
+
+.logout-actions {
+  width: min(450px, 100%);
+
+  margin: 35px auto 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ================= HOME BUTTON ================= */
+
+.logout-home-button {
+  width: 100%;
+
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 13px 20px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: linear-gradient(
+    135deg,
+    #079cf0,
+    #137de5
+  );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 14px rgba(8, 137, 226, 0.18);
+
+  transition: 0.2s ease;
+}
+
+.logout-home-button span {
+  flex: 0 0 auto;
+}
+
+.logout-home-button svg:last-child {
+  margin-left: 4px;
+}
+
+.logout-home-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 18px rgba(8, 137, 226, 0.25);
+}
+
+/* ================= LOGIN BUTTON ================= */
+
+.logout-login-button {
+  width: 100%;
+
+  min-height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 13px 20px;
+
+  border: 2px solid #8bd0ef;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #0787da;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.logout-login-button:hover {
+  background: #eff9ff;
+
+  border-color: #078ee8;
+
+  transform: translateY(-1px);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+
+  .logout-page {
+    min-height: 500px;
+
+    padding: 40px 16px;
+  }
+
+  .logout-card {
+    padding: 45px 25px 45px;
+  }
+
+  .logout-icon-circle {
+    width: 155px;
+    height: 155px;
+  }
+
+  .logout-icon-circle svg {
+    width: 68px;
+    height: 68px;
+  }
+
+  .logout-content h1 {
+    font-size: 34px;
+  }
+
+  .logout-thank-you {
+    font-size: 18px;
+  }
+
+  .logout-message {
+    font-size: 15px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .logout-page {
+    padding: 25px 12px;
+  }
+
+  .logout-card {
+    padding: 35px 17px 35px;
+
+    border-radius: 11px;
+  }
+
+  .logout-icon-circle {
+    width: 125px;
+    height: 125px;
+  }
+
+  .logout-icon-circle svg {
+    width: 55px;
+    height: 55px;
+  }
+
+  .logout-icon-wrapper {
+    margin-bottom: 24px;
+  }
+
+  .logout-content h1 {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+
+  .logout-thank-you {
+    font-size: 16px;
+  }
+
+  .logout-message {
+    font-size: 14px;
+  }
+
+  .logout-actions {
+    margin-top: 28px;
+  }
+
+  .logout-home-button,
+  .logout-login-button {
+    min-height: 53px;
+
+    font-size: 15px;
+  }
+
+}

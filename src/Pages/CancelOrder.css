@@ -1,0 +1,511 @@
+.cancel-order-page {
+  min-height: 100vh;
+  background: #f4fbff;
+  padding: 28px 0 35px;
+}
+
+.cancel-order-container {
+  width: min(94%, 1400px);
+  margin: 0 auto;
+}
+
+.cancel-order-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 8px 22px;
+}
+
+.cancel-heading-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #168be5, #0875d1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 5px 15px rgba(22, 139, 229, 0.22);
+}
+
+.cancel-order-heading h1 {
+  margin: 0 0 3px;
+  color: #0a2342;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.cancel-order-heading p {
+  margin: 0;
+  color: #6a849c;
+  font-size: 14px;
+}
+
+.cancel-order-card,
+.cancellation-reason-card {
+  background: #fff;
+  border: 1px solid #dcecf4;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(10, 53, 82, 0.04);
+}
+
+.cancel-order-card {
+  min-height: 155px;
+  display: grid;
+  grid-template-columns: 1.25fr 1.45fr 220px;
+  align-items: stretch;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.cancel-order-info {
+  padding: 18px 22px;
+  border-right: 1px solid #e2edf3;
+}
+
+.cancel-basic-info p {
+  margin: 0 0 5px;
+  color: #60788d;
+  font-size: 12px;
+}
+
+.cancel-basic-info strong {
+  color: #27425a;
+}
+
+.cancel-product-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 13px;
+}
+
+.cancel-product-image,
+.cancel-product-image-placeholder {
+  width: 74px;
+  height: 74px;
+  border-radius: 8px;
+  border: 1px solid #e1ebf1;
+  background: #f8fcff;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.cancel-product-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7ba3bd;
+}
+
+.cancel-product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cancel-product-details h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #102b47;
+}
+
+.cancel-product-details p {
+  margin: 0;
+  color: #70879a;
+  font-size: 11px;
+}
+
+.cancel-product-details strong {
+  color: #122d4a;
+  font-size: 14px;
+}
+
+.cancel-product-details span {
+  color: #71889a;
+  font-size: 11px;
+}
+
+.cancel-product-link {
+  width: fit-content;
+  margin-top: 2px;
+  color: #1388df;
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cancel-product-link:hover {
+  text-decoration: underline;
+}
+
+.cancel-status-area {
+  padding: 17px 20px;
+  border-right: 1px solid #e2edf3;
+}
+
+.cancel-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #dff8e9;
+  color: #159351;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cancel-timeline {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 24px;
+}
+
+.cancel-timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  color: #9aabb7;
+  white-space: nowrap;
+}
+
+.cancel-timeline-item span {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #e1e8ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-timeline-item.active {
+  color: #278d5b;
+}
+
+.cancel-timeline-item.active span {
+  background: #20a563;
+  color: #fff;
+}
+
+.cancel-timeline-item small {
+  font-size: 9px;
+}
+
+.cancel-timeline-line {
+  height: 2px;
+  flex: 1;
+  min-width: 25px;
+  margin-top: 9px;
+  background: #dfe8ed;
+}
+
+.cancel-timeline-line.active {
+  background: #27a467;
+}
+
+.cancel-total {
+  padding: 25px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cancel-total span {
+  color: #71899b;
+  font-size: 12px;
+}
+
+.cancel-total strong {
+  color: #112b48;
+  font-size: 21px;
+  margin-top: 3px;
+}
+
+.cancellation-reason-card {
+  padding: 18px 22px 20px;
+}
+
+.reason-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #162f4c;
+}
+
+.reason-heading > svg {
+  flex-shrink: 0;
+}
+
+.reason-heading h2 {
+  margin: 0 0 2px;
+  font-size: 16px;
+  color: #183450;
+}
+
+.reason-heading p {
+  margin: 0;
+  font-size: 11px;
+  color: #72889a;
+}
+
+.reason-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 90px;
+  row-gap: 10px;
+  margin: 18px 0 20px 48px;
+}
+
+.reason-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 20px;
+  color: #526d81;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.reason-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #168be5;
+  cursor: pointer;
+}
+
+.reason-other {
+  flex-wrap: wrap;
+}
+
+.other-reason-input {
+  flex: 1;
+  min-width: 170px;
+  height: 30px;
+  border: 1px solid #d5e4eb;
+  border-radius: 6px;
+  outline: none;
+  padding: 0 10px;
+  color: #425d70;
+  font-size: 11px;
+  background: #fbfdff;
+}
+
+.other-reason-input:focus {
+  border-color: #168be5;
+  box-shadow: 0 0 0 2px rgba(22, 139, 229, 0.08);
+}
+
+.cancel-error-message {
+  margin: -7px 0 13px 48px;
+  color: #d93025;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cancel-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-top: 13px;
+  border-top: 1px solid #e4edf2;
+}
+
+.back-to-orders-button,
+.confirm-cancellation-button {
+  min-height: 35px;
+  padding: 0 16px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.back-to-orders-button {
+  border: 1px solid #8db6ca;
+  color: #487188;
+  background: #fff;
+}
+
+.back-to-orders-button:hover {
+  background: #f3faff;
+}
+
+.confirm-cancellation-button {
+  border: none;
+  color: #fff;
+  background: linear-gradient(135deg, #178fe8, #0875d2);
+  box-shadow: 0 5px 12px rgba(15, 132, 219, 0.2);
+}
+
+.confirm-cancellation-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 15px rgba(15, 132, 219, 0.25);
+}
+
+.cancel-order-not-found {
+  background: #fff;
+  border: 1px solid #dcecf4;
+  border-radius: 14px;
+  padding: 70px 25px;
+  text-align: center;
+}
+
+.cancel-page-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #eaf5fc;
+  color: #168be5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-order-not-found h1 {
+  color: #112d4a;
+  margin: 0 0 8px;
+}
+
+.cancel-order-not-found p {
+  color: #6d8496;
+  margin-bottom: 20px;
+}
+
+.cancel-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #fff;
+  background: #168be5;
+  padding: 10px 18px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+  .cancel-order-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cancel-total {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 20px;
+    border-top: 1px solid #e2edf3;
+  }
+
+  .cancel-status-area {
+    border-right: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .cancel-order-page {
+    padding: 18px 0 25px;
+  }
+
+  .cancel-order-heading h1 {
+    font-size: 23px;
+  }
+
+  .cancel-order-card {
+    grid-template-columns: 1fr;
+  }
+
+  .cancel-order-info,
+  .cancel-status-area {
+    border-right: none;
+    border-bottom: 1px solid #e2edf3;
+  }
+
+  .cancel-total {
+    border-top: none;
+  }
+
+  .reason-options {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+    column-gap: 0;
+  }
+
+  .cancel-error-message {
+    margin-left: 0;
+  }
+
+  .cancel-action-row {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .back-to-orders-button,
+  .confirm-cancellation-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .cancel-order-heading {
+    align-items: flex-start;
+  }
+
+  .cancel-heading-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .cancel-order-heading h1 {
+    font-size: 20px;
+  }
+
+  .cancel-order-heading p {
+    font-size: 12px;
+  }
+
+  .cancel-order-info,
+  .cancel-status-area,
+  .cancellation-reason-card {
+    padding: 15px;
+  }
+
+  .cancel-product-image,
+  .cancel-product-image-placeholder {
+    width: 62px;
+    height: 62px;
+  }
+
+  .cancel-timeline-item small {
+    font-size: 8px;
+  }
+
+  .cancel-timeline-line {
+    min-width: 12px;
+  }
+
+  .reason-other {
+    align-items: flex-start;
+  }
+
+  .other-reason-input {
+    width: 100%;
+    flex-basis: 100%;
+    margin-left: 25px;
+  }
+}

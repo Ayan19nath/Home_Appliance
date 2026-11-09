@@ -1,0 +1,184 @@
+.category-banner {
+  width: 100%;
+
+  margin-top: 55px;
+
+  overflow: hidden;
+
+  border-radius: 8px;
+
+  background: linear-gradient(
+    100deg,
+    #063a70,
+    #032137,
+    #20a9ef
+  );
+}
+
+.category-banner-content {
+  min-height: 245px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+.banner-text {
+  position: relative;
+  z-index: 2;
+
+  width: 40%;
+
+  padding: 30px 0 30px 40px;
+
+  box-sizing: border-box;
+}
+
+.banner-text span {
+  color: #9fddff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 1.2px;
+}
+
+.banner-text h2 {
+  margin: 7px 0;
+
+  color: #ffffff;
+
+  font-size: 27px;
+  line-height: 1.15;
+}
+
+.banner-text p {
+  margin: 0 0 15px;
+
+  color: #e8f6ff;
+
+  font-size: 14px;
+}
+
+.banner-text button {
+  border: none;
+
+  border-radius: 20px;
+
+  padding: 12px 18px;
+
+  background: #ffffff;
+  color: #0864a5;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.banner-products {
+  width: 60%;
+  height: 100%;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.banner-products img {
+  width: 100%;
+  max-height: 245px;
+
+  object-fit: contain;
+}
+
+.discount-badge {
+  position: absolute;
+
+  top: 18px;
+  right: 35px;
+
+  width: 82px;
+  height: 82px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  border: 5px solid #0a5598;
+
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.25);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  transform: rotate(8deg);
+}
+
+.discount-badge strong {
+  color: #12345b;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.discount-badge span {
+  color: #12345b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+  .category-banner {
+    margin-top: 35px;
+  }
+
+  .category-banner-content {
+    min-height: 320px;
+    flex-direction: column;
+  }
+
+  .banner-text {
+    width: 100%;
+    padding: 25px 20px 5px;
+    text-align: center;
+  }
+
+  .banner-text h2 {
+    font-size: 23px;
+  }
+
+  .banner-products {
+    width: 100%;
+    height: 170px;
+  }
+
+  .banner-products img {
+    max-height: 200px;
+  }
+
+  .discount-badge {
+    width: 65px;
+    height: 65px;
+
+    top: 12px;
+    right: 12px;
+  }
+
+  .discount-badge strong {
+    font-size: 17px;
+  }
+
+  .discount-badge span {
+    font-size: 10px;
+  }
+
+}

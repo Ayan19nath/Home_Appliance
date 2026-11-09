@@ -1,0 +1,788 @@
+/* =========================================
+   ORDER SUCCESS PAGE
+========================================= */
+
+.order-success-page {
+  min-height: calc(100vh - 80px);
+  background: #f4f8fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 25px 70px;
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+========================================= */
+
+.order-success-container {
+  width: 100%;
+  max-width: 1120px;
+  min-height: 760px;
+
+  background: #f8fbfd;
+
+  border: 1px solid #dce7ef;
+  border-radius: 28px;
+
+  box-shadow:
+    0 18px 55px rgba(11, 44, 76, 0.08);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  padding: 75px 40px 55px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   SUCCESS ICON
+========================================= */
+
+.order-success-icon {
+  width: 145px;
+  height: 145px;
+
+  border-radius: 50%;
+
+  background: #16a574;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+
+  margin-bottom: 35px;
+
+  box-shadow:
+    0 12px 30px rgba(22, 165, 116, 0.20);
+}
+
+
+/* =========================================
+   HEADING
+========================================= */
+
+.order-success-container h1 {
+  margin: 0;
+
+  color: #07152f;
+
+  font-size: 46px;
+  line-height: 1.2;
+
+  font-weight: 750;
+
+  letter-spacing: -1px;
+}
+
+
+/* =========================================
+   THANK YOU TEXT
+========================================= */
+
+.order-success-thankyou {
+  margin: 22px 0 10px;
+
+  color: #202b39;
+
+  font-size: 24px;
+  line-height: 1.5;
+
+  font-weight: 400;
+}
+
+
+/* =========================================
+   ORDER ID
+========================================= */
+
+.order-success-id {
+  margin: 0;
+
+  color: #1d2735;
+
+  font-size: 23px;
+  line-height: 1.5;
+}
+
+.order-success-id strong {
+  color: #14658e;
+
+  font-weight: 750;
+}
+
+
+/* =========================================
+   TOTAL
+========================================= */
+
+.order-success-total {
+  margin: 9px 0 0;
+
+  color: #303b49;
+
+  font-size: 18px;
+}
+
+.order-success-total strong {
+  color: #07152f;
+}
+
+
+/* =========================================
+   ACTION BUTTONS
+========================================= */
+
+.order-success-actions {
+  width: 100%;
+  max-width: 860px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 42px;
+
+  margin-top: 38px;
+}
+
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+.order-success-primary,
+.order-success-secondary {
+  min-height: 74px;
+
+  border-radius: 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  padding: 0 28px;
+
+  box-sizing: border-box;
+
+  text-decoration: none;
+
+  font-size: 21px;
+  font-weight: 700;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.order-success-primary {
+  color: #ffffff;
+
+  background: #0d477e;
+
+  border: 2px solid #0d477e;
+
+  box-shadow:
+    0 8px 20px rgba(13, 71, 126, 0.15);
+}
+
+
+.order-success-primary:hover {
+  background: #083b6c;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 26px rgba(13, 71, 126, 0.22);
+}
+
+
+/* =========================================
+   SECONDARY BUTTON
+========================================= */
+
+.order-success-secondary {
+  color: #145778;
+
+  background: transparent;
+
+  border: 2px solid #1c5877;
+}
+
+
+.order-success-secondary:hover {
+  background: #edf6fa;
+
+  transform: translateY(-2px);
+}
+
+
+/* =========================================
+   DELIVERY ILLUSTRATION
+========================================= */
+
+.order-delivery-illustration {
+  position: relative;
+
+  width: 510px;
+  height: 190px;
+
+  margin-top: 48px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+
+/* =========================================
+   BOX
+========================================= */
+
+.delivery-box {
+  position: absolute;
+
+  left: 145px;
+  bottom: 14px;
+
+  width: 205px;
+  height: 145px;
+
+  background: #dca56c;
+
+  border-radius: 3px;
+
+  box-shadow:
+    inset -18px 0 0 rgba(133, 82, 43, 0.10),
+    0 8px 14px rgba(64, 49, 35, 0.08);
+
+  transform: perspective(500px)
+    rotateY(-3deg);
+}
+
+
+.delivery-box::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 22px;
+
+  background: rgba(116, 73, 40, 0.10);
+}
+
+
+.delivery-box-tape {
+  position: absolute;
+
+  top: 0;
+  left: 75px;
+
+  width: 34px;
+  height: 145px;
+
+  background: rgba(166, 112, 63, 0.25);
+}
+
+
+.delivery-box-lines {
+  position: absolute;
+
+  left: 18px;
+  bottom: 17px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+.delivery-box-lines span {
+  display: block;
+
+  width: 29px;
+  height: 4px;
+
+  background: #5d4937;
+
+  border-radius: 2px;
+}
+
+
+/* =========================================
+   BLENDER
+========================================= */
+
+.delivery-blender {
+  position: absolute;
+
+  left: 60px;
+  bottom: 10px;
+
+  width: 78px;
+  height: 135px;
+}
+
+
+.blender-top {
+  position: absolute;
+
+  top: 0;
+  left: 22px;
+
+  width: 34px;
+  height: 9px;
+
+  background: #1d2c3c;
+
+  border-radius: 6px 6px 2px 2px;
+}
+
+
+.blender-jar {
+  position: absolute;
+
+  top: 8px;
+  left: 14px;
+
+  width: 50px;
+  height: 62px;
+
+  background: linear-gradient(
+    180deg,
+    #b8d0df,
+    #718ba0
+  );
+
+  border: 3px solid #344a5d;
+
+  border-radius: 5px 5px 14px 14px;
+
+  overflow: hidden;
+}
+
+
+.blender-liquid {
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 25px;
+
+  background: #d8e3e8;
+}
+
+
+.blender-base {
+  position: absolute;
+
+  left: 10px;
+  bottom: 0;
+
+  width: 58px;
+  height: 66px;
+
+  background: linear-gradient(
+    180deg,
+    #f5f6f6,
+    #c8d0d4
+  );
+
+  border-radius: 9px 9px 13px 13px;
+
+  border: 2px solid #8999a3;
+}
+
+
+.blender-button {
+  position: absolute;
+
+  left: 21px;
+  top: 16px;
+
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+
+  background: #344b5c;
+
+  box-shadow:
+    0 0 0 3px #aab6bc;
+}
+
+
+/* =========================================
+   PLANT
+========================================= */
+
+.delivery-plant {
+  position: absolute;
+
+  right: 48px;
+  bottom: 7px;
+
+  width: 95px;
+  height: 155px;
+}
+
+
+.plant-stem {
+  position: absolute;
+
+  left: 45px;
+  bottom: 50px;
+
+  width: 6px;
+  height: 88px;
+
+  background: #43853d;
+
+  border-radius: 5px;
+
+  transform: rotate(2deg);
+}
+
+
+.plant-leaf {
+  position: absolute;
+
+  width: 37px;
+  height: 22px;
+
+  background: #4f9c43;
+
+  border-radius: 100% 0 100% 0;
+
+  transform-origin: right bottom;
+}
+
+
+.leaf-one {
+  left: 43px;
+  bottom: 105px;
+
+  transform: rotate(-28deg);
+}
+
+
+.leaf-two {
+  left: 10px;
+  bottom: 91px;
+
+  transform: rotate(20deg);
+}
+
+
+.leaf-three {
+  left: 47px;
+  bottom: 77px;
+
+  transform: rotate(-22deg);
+}
+
+
+.leaf-four {
+  left: 17px;
+  bottom: 66px;
+
+  transform: rotate(23deg);
+}
+
+
+.plant-pot {
+  position: absolute;
+
+  left: 25px;
+  bottom: 0;
+
+  width: 48px;
+  height: 48px;
+
+  background: #c78350;
+
+  clip-path: polygon(
+    8% 0,
+    92% 0,
+    80% 100%,
+    20% 100%
+  );
+
+  border-radius: 4px 4px 12px 12px;
+}
+
+
+.plant-pot::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: -3px;
+
+  width: 54px;
+  height: 9px;
+
+  background: #a8663c;
+
+  border-radius: 5px;
+}
+
+
+/* =========================================
+   DELIVERY MESSAGE
+========================================= */
+
+.delivery-message {
+  margin: 24px 0 0;
+
+  color: #07152f;
+
+  font-size: 27px;
+  line-height: 1.35;
+
+  font-weight: 700;
+}
+
+
+.delivery-submessage {
+  margin: 9px 0 0;
+
+  color: #667585;
+
+  font-size: 16px;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+
+  .order-success-container {
+    min-height: 700px;
+
+    padding: 60px 30px 45px;
+  }
+
+  .order-success-icon {
+    width: 125px;
+    height: 125px;
+
+    margin-bottom: 28px;
+  }
+
+  .order-success-icon svg {
+    width: 54px;
+    height: 54px;
+  }
+
+  .order-success-container h1 {
+    font-size: 38px;
+  }
+
+  .order-success-thankyou {
+    font-size: 21px;
+  }
+
+  .order-success-id {
+    font-size: 20px;
+  }
+
+  .order-success-actions {
+    gap: 22px;
+  }
+
+  .order-success-primary,
+  .order-success-secondary {
+    min-height: 65px;
+
+    font-size: 18px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 650px) {
+
+  .order-success-page {
+    min-height: calc(100vh - 70px);
+
+    padding: 25px 14px 40px;
+
+    align-items: flex-start;
+  }
+
+  .order-success-container {
+    min-height: auto;
+
+    border-radius: 20px;
+
+    padding: 42px 18px 40px;
+  }
+
+  .order-success-icon {
+    width: 100px;
+    height: 100px;
+
+    margin-bottom: 25px;
+  }
+
+  .order-success-icon svg {
+    width: 46px;
+    height: 46px;
+  }
+
+  .order-success-container h1 {
+    font-size: 29px;
+
+    letter-spacing: -0.5px;
+  }
+
+  .order-success-thankyou {
+    margin-top: 16px;
+
+    font-size: 18px;
+  }
+
+  .order-success-id {
+    margin-top: 5px;
+
+    font-size: 17px;
+  }
+
+  .order-success-total {
+    font-size: 16px;
+  }
+
+  .order-success-actions {
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+
+    margin-top: 28px;
+  }
+
+  .order-success-primary,
+  .order-success-secondary {
+    width: 100%;
+
+    min-height: 58px;
+
+    font-size: 16px;
+
+    border-radius: 10px;
+  }
+
+  .order-delivery-illustration {
+    width: 100%;
+
+    max-width: 380px;
+
+    height: 155px;
+
+    margin-top: 35px;
+
+    transform: scale(0.78);
+    transform-origin: center;
+  }
+
+  .delivery-box {
+    left: 50%;
+
+    transform:
+      translateX(-50%)
+      perspective(500px)
+      rotateY(-3deg);
+  }
+
+  .delivery-blender {
+    left: 8%;
+  }
+
+  .delivery-plant {
+    right: 5%;
+  }
+
+  .delivery-message {
+    margin-top: 5px;
+
+    font-size: 21px;
+  }
+
+  .delivery-submessage {
+    font-size: 14px;
+
+    line-height: 1.5;
+  }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 400px) {
+
+  .order-success-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .order-success-container {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .order-success-container h1 {
+    font-size: 25px;
+  }
+
+  .order-success-thankyou {
+    font-size: 17px;
+  }
+
+  .order-success-id {
+    font-size: 15px;
+  }
+
+  .order-success-actions {
+    gap: 11px;
+  }
+
+  .order-success-primary,
+  .order-success-secondary {
+    min-height: 55px;
+
+    font-size: 15px;
+  }
+
+  .delivery-message {
+    font-size: 19px;
+  }
+
+}

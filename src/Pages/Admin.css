@@ -1,0 +1,51 @@
+/* ========== ADMIN REQUEST PAGE (centered card) ========== */
+.admin-login-page { min-height: 70vh; display: flex; align-items: center; justify-content: center; background: #f5f8fc; padding: 20px; }
+.admin-card, .admin-form { background: #fff; border: 1px solid #dce3ea; border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.admin-card { width: 100%; max-width: 360px; }
+.admin-card h2, .admin-page h2, .admin-page h3 { color: #092d54; }
+.admin-card p { color: #667d91; font-size: 14px; }
+
+/* ========== INPUTS AND BUTTONS ========== */
+.admin-card input, .admin-page input { height: 40px; padding: 0 12px; border: 1px solid #d6e0e8; border-radius: 7px; outline: none; }
+.admin-page select { height: 40px; padding: 0 12px; border: 1px solid #d6e0e8; border-radius: 7px; outline: none; background: #fff; }
+.admin-page textarea { min-height: 80px; padding: 10px 12px; border: 1px solid #d6e0e8; border-radius: 7px; outline: none; font-family: inherit; resize: vertical; }  /* NEW */
+.admin-page input[type="checkbox"] { width: auto; height: auto; }  /* NEW */
+.admin-card button, .admin-page button { height: 36px; padding: 0 16px; border-radius: 6px; background: #0966a6; color: #fff; font-size: 13px; margin-right: 6px; }
+.admin-card button:hover, .admin-page button:hover { background: #074e80; }
+.admin-page .danger { background: #e53935; }
+.admin-page .approve { background: #168447; }
+
+/* ========== CATEGORY IMAGE PICKER + PREVIEW ========== */
+.admin-file { display: flex; flex-direction: column; gap: 6px; color: #4b6a84; font-size: 13px; }
+.admin-page .admin-file input { height: auto; padding: 8px 12px; }
+.admin-preview { width: 120px; height: 90px; object-fit: contain; border: 1px solid #e1e7ec; border-radius: 6px; }
+
+/* ========== PRODUCT FORM: ROWS AND 4 IMAGE SLOTS ========== */
+.admin-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }  /* NEW */
+.admin-images { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }  /* NEW */
+.admin-slot { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px dashed #b8c9d8; border-radius: 8px; font-size: 13px; color: #4b6a84; }  /* NEW */
+.admin-slot img, .admin-slot-empty { width: 100%; height: 90px; object-fit: contain; border-radius: 6px; background: #f5f8fc; display: flex; align-items: center; justify-content: center; font-size: 12px; }  /* NEW */
+.admin-page .admin-slot input[type="file"] { width: 100%; height: auto; padding: 6px; font-size: 12px; }  /* NEW */
+.admin-slot small { display: flex; align-items: center; gap: 6px; }  /* NEW */
+
+/* ========== MESSAGES ========== */
+.admin-error { color: #e53935; font-size: 13px; }
+.admin-card .admin-success { color: #168447; font-size: 13px; }
+
+/* ========== DASHBOARD LAYOUT ========== */
+.admin-page { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+.admin-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.admin-page .admin-section { margin: 25px 0 12px; }
+.admin-form { margin: 25px 0; }
+
+/* ========== TABLES ========== */
+.admin-table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; background: #fff; }
+.admin-table th, .admin-table td { padding: 10px; border-bottom: 1px solid #e1e7ec; text-align: left; font-size: 14px; }
+.admin-table img { width: 50px; height: 40px; object-fit: contain; }
+
+/* ========== MOBILE ========== */
+@media (max-width: 700px) {  /* NEW */
+  .admin-images { grid-template-columns: repeat(2, 1fr); }
+  .admin-row { grid-template-columns: 1fr; }
+}

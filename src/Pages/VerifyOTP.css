@@ -1,0 +1,522 @@
+/* =========================================
+   VERIFY OTP PAGE
+========================================= */
+
+.otp-page {
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 45px 20px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f3faff;
+}
+
+
+/* =========================================
+   OTP CONTAINER
+========================================= */
+
+.otp-container {
+  width: 100%;
+  max-width: 520px;
+
+  padding: 48px 50px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #d9e6ee;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 10px 35px rgba(20, 76, 120, 0.09);
+
+  text-align: center;
+}
+
+
+/* =========================================
+   TOP ICON
+========================================= */
+
+.otp-icon {
+  width: 82px;
+  height: 82px;
+
+  margin: 0 auto 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e5f5ff;
+
+  border: 1px solid #c9e9fa;
+
+  color: #087fc9;
+}
+
+
+/* =========================================
+   HEADING
+========================================= */
+
+.otp-container h1 {
+  margin: 0 0 10px;
+
+  color: #103e6b;
+
+  font-size: 31px;
+
+  line-height: 1.2;
+
+  font-weight: 750;
+}
+
+
+.otp-subtitle {
+  max-width: 390px;
+
+  margin: 0 auto 18px;
+
+  color: #667d91;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================
+   MOBILE NUMBER
+========================================= */
+
+.otp-mobile {
+  width: fit-content;
+
+  min-height: 42px;
+
+  margin: 0 auto 30px;
+
+  padding: 0 17px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #d4e7f2;
+
+  border-radius: 7px;
+
+  background: #f5fbff;
+
+  color: #225a83;
+
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+
+.otp-mobile svg {
+  color: #087fc9;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.otp-form {
+  width: 100%;
+
+  text-align: left;
+}
+
+
+.otp-form label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #153d66;
+
+  font-size: 15px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   OTP INPUT
+========================================= */
+
+.otp-input-wrapper {
+  width: 100%;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 16px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ccd9e3;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  transition: 0.2s ease;
+}
+
+
+.otp-input-wrapper:focus-within {
+  border-color: #1687d6;
+
+  box-shadow:
+    0 0 0 3px rgba(22, 135, 214, 0.10);
+}
+
+
+.otp-input-wrapper svg {
+  flex-shrink: 0;
+
+  color: #2b6694;
+}
+
+
+.otp-input-wrapper input {
+  width: 100%;
+  height: 100%;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #173f62;
+
+  font-size: 20px;
+
+  font-weight: 700;
+
+  letter-spacing: 6px;
+
+  text-align: center;
+}
+
+
+.otp-input-wrapper input::placeholder {
+  color: #8798a6;
+
+  font-size: 14px;
+
+  font-weight: 400;
+
+  letter-spacing: 0;
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.otp-error {
+  margin: 10px 0 14px;
+
+  color: #d23939;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   VERIFY BUTTON
+========================================= */
+
+.otp-verify-btn {
+  width: 100%;
+  height: 55px;
+
+  margin-top: 22px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #147bd0,
+      #119ce4
+    );
+
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.otp-verify-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 18px rgba(20, 123, 208, 0.20);
+}
+
+
+.otp-verify-btn:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================
+   RESEND
+========================================= */
+
+.otp-resend {
+  margin-top: 22px;
+
+  text-align: center;
+}
+
+
+.otp-resend p {
+  margin: 0;
+
+  color: #718395;
+
+  font-size: 14px;
+}
+
+
+.otp-resend strong {
+  color: #087bc3;
+
+  font-weight: 700;
+}
+
+
+.otp-resend button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #087bc3;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.otp-resend button:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   BACK
+========================================= */
+
+.otp-back {
+  margin: 25px 0 0;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #e4ebf0;
+
+  color: #6c8091;
+
+  font-size: 13px;
+}
+
+
+.otp-back a {
+  margin-left: 6px;
+
+  color: #087bc3;
+
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+
+.otp-back a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 650px) {
+
+  .otp-page {
+    padding: 25px 15px;
+  }
+
+
+  .otp-container {
+    padding: 40px 32px;
+  }
+
+
+  .otp-container h1 {
+    font-size: 28px;
+  }
+
+
+  .otp-subtitle {
+    font-size: 14px;
+  }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .otp-page {
+    padding: 15px 10px;
+  }
+
+
+  .otp-container {
+    padding: 34px 22px;
+
+    border-radius: 10px;
+  }
+
+
+  .otp-icon {
+    width: 72px;
+    height: 72px;
+
+    margin-bottom: 20px;
+  }
+
+
+  .otp-icon svg {
+    width: 39px;
+    height: 39px;
+  }
+
+
+  .otp-container h1 {
+    font-size: 25px;
+  }
+
+
+  .otp-subtitle {
+    font-size: 13px;
+
+    line-height: 1.55;
+  }
+
+
+  .otp-mobile {
+    margin-bottom: 25px;
+
+    font-size: 13px;
+  }
+
+
+  .otp-input-wrapper {
+    height: 54px;
+  }
+
+
+  .otp-input-wrapper input {
+    font-size: 18px;
+
+    letter-spacing: 5px;
+  }
+
+
+  .otp-verify-btn {
+    height: 52px;
+
+    font-size: 15px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 360px) {
+
+  .otp-container {
+    padding: 30px 17px;
+  }
+
+
+  .otp-container h1 {
+    font-size: 23px;
+  }
+
+
+  .otp-input-wrapper {
+    padding: 0 12px;
+  }
+
+
+  .otp-input-wrapper input {
+    letter-spacing: 4px;
+  }
+
+}
