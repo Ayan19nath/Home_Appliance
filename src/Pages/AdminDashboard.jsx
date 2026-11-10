@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { categoryIcons } from "../data/categoryIcons";
 import AdminItems from "../Components/AdminItems";
+import AdminUsers from "../Components/AdminUsers";
 import "./Admin.css";
 
 const empty = { cat_name: "", cat_description: "", cat_icon: "" };
@@ -20,7 +21,7 @@ export default function AdminDashboard() {
   // Only the owner can see and handle admin requests
   const isOwner = localStorage.getItem("adminOwner") === "true";
 
-  // Load the lists (a failed load now shows a message instead of an empty list)
+  // Load the lists (a failed load shows a message instead of an empty list)
   const loadCategories = () =>
     api.get("/category").then((res) => setCategories(res.data)).catch(() => setError("Could not load categories."));
   const loadRequests = () =>
@@ -105,7 +106,7 @@ export default function AdminDashboard() {
       <div className="admin-top">
         <div>
           <h2>Admin Dashboard</h2>
-          <p>Manage admin requests, categories and products</p>
+          <p>Manage admin requests, categories, users and products</p>
         </div>
         <button onClick={logout}>Logout</button>
       </div>
@@ -203,6 +204,9 @@ export default function AdminDashboard() {
           </table>
         </div>
       </section>
+
+      {/* ========== USERS ========== */}
+      <AdminUsers />
 
       {/* ========== PRODUCTS ========== */}
       <AdminItems />
