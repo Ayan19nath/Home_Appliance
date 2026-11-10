@@ -145,18 +145,20 @@ function Login() {
                   </div>
                 </div>
 
-                {/* Remember me + forgot password (customer only) */}
-                {mode === "customer" && (
-                  <div className="login-options">
+                {/* Remember me (customer only) + forgot password (customer and admin) */}
+                <div className="login-options">
+                  {mode === "customer" ? (
                     <label className="remember-me">
                       <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
                       <span>Remember me</span>
                     </label>
-                    <button type="button" className="forgot-password" onClick={() => navigate("/forgot-password")}>
-                      Forgot password?
-                    </button>
-                  </div>
-                )}
+                  ) : (
+                    <span />
+                  )}
+                  <button type="button" className="forgot-password" onClick={() => navigate("/forgot-password")}>
+                    Forgot password?
+                  </button>
+                </div>
 
                 <button type="submit" className="login-button" disabled={loading}>
                   <span>{loading ? "Logging in..." : "Login"}</span>
