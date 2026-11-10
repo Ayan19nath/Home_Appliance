@@ -3,6 +3,7 @@ import { Mail, Lock, Eye, EyeOff, ShoppingCart, Heart, ShieldCheck, ArrowRight }
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import Logo from "../Components/Logo";
+import GoogleButton, { googleReady } from "../Components/GoogleButton";
 import { saveUser, clearUser } from "../data/session";
 import { emailOk } from "../data/validation";
 import "./Login.css";
@@ -21,7 +22,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true); // stay logged in by default
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -58,8 +59,6 @@ function Login() {
       setLoading(false);
     }
   };
-
-  const handleGoogleLogin = () => alert("Google Login will be connected with your MERN backend.");
 
   return (
     <main className="login-page">
@@ -176,16 +175,16 @@ function Login() {
               {/* Customer mode: Google and register */}
               {mode === "customer" && (
                 <>
-                  <div className="login-divider">
-                    <span></span>
-                    <p>or</p>
-                    <span></span>
-                  </div>
-
-                  <button type="button" className="google-login-button" onClick={handleGoogleLogin}>
-                    <span className="google-g"><span>G</span></span>
-                    <span>Continue with Google</span>
-                  </button>
+                  {googleReady && (
+                    <>
+                      <div className="login-divider">
+                        <span></span>
+                        <p>or</p>
+                        <span></span>
+                      </div>
+                      <GoogleButton onError={setError} />
+                    </>
+                  )}
 
                   <p className="register-text">
                     Don&apos;t have an account?

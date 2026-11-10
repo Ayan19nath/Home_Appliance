@@ -1,4 +1,4 @@
-// Customer login state. "session" lasts for this browser tab, "local" is the "Remember me" login.
+// Customer login state. "local" stays after the browser closes, "session" lasts only for this tab.
 const KEY = "homehub-user";
 const ADMIN_KEYS = ["adminToken", "adminRole", "adminOwner"];
 const tell = () => window.dispatchEvent(new Event("homehub-auth-changed")); // the Navbar and pages refresh
@@ -43,4 +43,17 @@ export const updateUser = (changes) => {
   } catch {
     // ignore invalid saved data
   }
+};
+
+// Replace the saved login token with a renewed one (nothing on the page changes)
+export const renewToken = (token) => {
+  for (const store of [sessionStorage, localStorage]) {
+    try {
+      const user = JSON.parse(store.getItem(KEY));
+      if (user?.loggedIn) return store.setItem(KEY, JSON.stringify({ ...user, token }));
+    } catch {
+      // ignore invalid saved data
+    }
+  }
+  if (localStorage.getItem("adminToken")) localStorage.setItem("adminToken", token);
 };

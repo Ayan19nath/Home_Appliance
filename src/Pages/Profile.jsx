@@ -285,11 +285,15 @@ function Profile() {
               ))}
             </div>
 
+            {/* Login button for visitors who are not logged in */}
             {!user && (
-              <button type="button" onClick={() => navigate("/login")}>
-                <LogIn size={18} />
-                Login to Your Account
-              </button>
+              <div className="profile-login-box">
+                <p>Sign in to see your orders, wishlist and saved addresses.</p>
+                <button type="button" className="profile-login-btn" onClick={() => navigate("/login")}>
+                  <LogIn size={24} />
+                  Login to Your Account
+                </button>
+              </div>
             )}
           </aside>
 

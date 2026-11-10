@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import api from "../api";
 import Logo from "../Components/Logo";
+import GoogleButton, { googleReady } from "../Components/GoogleButton";
 import { passwordProblem, emailOk } from "../data/validation";
 import "./Register.css";
 
@@ -159,20 +160,17 @@ function Register() {
                 <ArrowRight size={21} />
               </button>
 
-              <div className="register-divider">
-                <span></span>
-                <p>or</p>
-                <span></span>
-              </div>
-
-              <button
-                type="button"
-                className="google-register-btn"
-                onClick={() => alert("Google registration will be connected with backend OAuth later.")}
-              >
-                <span className="google-icon">G</span>
-                <span>Continue with Google</span>
-              </button>
+              {/* Google sign-up (creates the account and logs in) */}
+              {googleReady && (
+                <>
+                  <div className="register-divider">
+                    <span></span>
+                    <p>or</p>
+                    <span></span>
+                  </div>
+                  <GoogleButton onError={setError} />
+                </>
+              )}
 
               <p className="login-link-text">
                 Already have an account?

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { getUser, clearUser, clearAdmin } from "./data/session";
+import { getUser, clearUser, clearAdmin, renewToken } from "./data/session";
 
-// Backend address (Project_API); set VITE_API_URL on Vercel
+// Backend address (Project_Api); set VITE_API_URL on Vercel
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || "http://localhost:4500" });
 
 // Send the login token (customer or admin) with every request
@@ -11,12 +11,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Expired or invalid token: log out and open the login page
-// (login and password-reset calls are skipped, so wrong passwords just show an error)
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    // the server sent a renewed token: keep it, so the login does not run out while the site is used
+    if (res.headers["x-new-token"]) renewToken(res.headers["x-new-token"]);
+    return res;
+  },
   (err) => {
-    const authCall = /\/user\/(login|forgot-password|verify-otp|reset-password)/.test(err.config?.url || "");
+    // Expired or invalid token: log out and open the login page
+    // (login and password-reset calls are skipped, so wrong passwords just show an error)
+    const authCall = /\/user\/(login|google|forgot-password|verify-otp|reset-password)/.test(err.config?.url || "");
     if (err.response?.status === 401 && !authCall && err.config?.headers?.Authorization) {
       clearUser();
       clearAdmin();
