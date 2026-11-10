@@ -20,8 +20,12 @@ export default function AdminDashboard() {
   // Only the owner can see and handle admin requests
   const isOwner = localStorage.getItem("adminOwner") === "true";
 
-  const loadCategories = () => api.get("/category").then((res) => setCategories(res.data));
-  const loadRequests = () => api.get("/user/admin-requests").then((res) => setRequests(res.data));
+  // Load the lists (a failed load now shows a message instead of an empty list)
+  const loadCategories = () =>
+    api.get("/category").then((res) => setCategories(res.data)).catch(() => setError("Could not load categories."));
+  const loadRequests = () =>
+    api.get("/user/admin-requests").then((res) => setRequests(res.data))
+      .catch((err) => setError(err.response?.data?.message || "Could not load admin requests."));
 
   useEffect(() => {
     loadCategories();
@@ -96,17 +100,33 @@ export default function AdminDashboard() {
 
   return (
     <div className="admin-page">
+
+      {/* ========== HEADER ========== */}
       <div className="admin-top">
-        <h2>Admin Dashboard</h2>
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p>Manage admin requests, categories and products</p>
+        </div>
         <button onClick={logout}>Logout</button>
+      </div>
+
+      {/* ========== STAT CARDS ========== */}
+      <div className="admin-stats">
+        <div className="admin-stat blue"><span>Categories</span><strong>{categories.length}</strong></div>
+        {isOwner && (
+          <div className={`admin-stat orange${requests.length ? " alert" : ""}`}>
+            <span>Pending Requests</span><strong>{requests.length}</strong>
+          </div>
+        )}
+        <div className="admin-stat green"><span>Your Role</span><strong>{isOwner ? "Owner" : "Admin"}</strong></div>
       </div>
 
       {error && <p className="admin-error">{error}</p>}
 
       {/* ========== ADMIN REQUESTS (owner only) ========== */}
       {isOwner && (
-        <>
-          <h3 className="admin-section">Admin Requests ({requests.length})</h3>
+        <section className="admin-box requests">
+          <h3>Admin Requests ({requests.length})</h3>
           <div className="admin-table-wrap">
             <table className="admin-table">
               <thead>
@@ -129,7 +149,7 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
-        </>
+        </section>
       )}
 
       {/* ========== CATEGORY FORM ========== */}
@@ -160,26 +180,29 @@ export default function AdminDashboard() {
       </form>
 
       {/* ========== CATEGORY LIST ========== */}
-      <div className="admin-table-wrap">
-        <table className="admin-table">
-          <thead>
-            <tr><th>Image</th><th>Name</th><th>Description</th><th></th></tr>
-          </thead>
-          <tbody>
-            {categories.map((c) => (
-              <tr key={c._id}>
-                <td>{c.cat_image && <img src={c.cat_image} alt={c.cat_name} />}</td>
-                <td>{c.cat_name}</td>
-                <td>{c.cat_description}</td>
-                <td>
-                  <button onClick={() => edit(c)}>Edit</button>
-                  <button className="danger" onClick={() => remove(c._id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <section className="admin-box cats">
+        <h3>Categories ({categories.length})</h3>
+        <div className="admin-table-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr><th>Image</th><th>Name</th><th>Description</th><th></th></tr>
+            </thead>
+            <tbody>
+              {categories.map((c) => (
+                <tr key={c._id}>
+                  <td>{c.cat_image && <img src={c.cat_image} alt={c.cat_name} />}</td>
+                  <td>{c.cat_name}</td>
+                  <td>{c.cat_description}</td>
+                  <td>
+                    <button className="edit" onClick={() => edit(c)}>Edit</button>
+                    <button className="danger" onClick={() => remove(c._id)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       {/* ========== PRODUCTS ========== */}
       <AdminItems />
