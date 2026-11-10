@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import {
   User, Mail, Phone, CalendarDays, Package, Heart, MapPin,
-  Pencil, Camera, Star, ShoppingBag, ArrowRight, LogIn,
+  Pencil, Camera, Star, ShoppingBag, ArrowRight, LogIn, LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { useWishlist } from "../Context/WishlistContext";
-import { getUser, updateUser } from "../data/session";
+import { getUser, updateUser, clearUser, clearAdmin } from "../data/session";
 import CategoryOffer from "../assets/images/Category_offer.jpeg";
 import "./Profile.css";
 
@@ -116,6 +116,13 @@ function Profile() {
     setEditing(false);
     setError("");
     setForm({ name: user?.name || "", email: user?.email || "", phone: user?.phone || "", dob: user?.dob || "" });
+  };
+
+  // Log out (customer and admin login are both cleared), then open the home page
+  const handleLogout = () => {
+    clearAdmin();
+    clearUser();
+    navigate("/");
   };
 
   // Quick info boxes: [label, value, icon, page to open]
@@ -285,16 +292,18 @@ function Profile() {
               ))}
             </div>
 
-            {/* Login button for visitors who are not logged in */}
-            {!user && (
-              <div className="profile-login-box">
-                <p>Sign in to see your orders, wishlist and saved addresses.</p>
-                <button type="button" className="profile-login-btn" onClick={() => navigate("/login")}>
-                  <LogIn size={24} />
-                  Login to Your Account
-                </button>
-              </div>
-            )}
+            {/* Login button (visitors) or Log out button (logged-in customers) */}
+            <div className="profile-login-box">
+              <p>{user ? "You are logged in. Log out when you are done." : "Sign in to see your orders, wishlist and saved addresses."}</p>
+              <button
+                type="button"
+                className={`profile-login-btn${user ? " profile-logout-btn" : ""}`}
+                onClick={user ? handleLogout : () => navigate("/login")}
+              >
+                {user ? <LogOut size={24} /> : <LogIn size={24} />}
+                {user ? "Log out from my account" : "Login to Your Account"}
+              </button>
+            </div>
           </aside>
 
         </div>

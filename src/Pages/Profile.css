@@ -91,11 +91,13 @@
 .profile-promo-categories svg { color: #087fd8; }
 .profile-promo-categories span { text-align: center; color: #286180; font-size: 11px; font-weight: 600; line-height: 1.15; }
 
-/* ========== RIGHT: LOGIN BUTTON (visitors who are not logged in) ========== */
+/* ========== RIGHT: LOGIN / LOG OUT BUTTON ========== */
 .profile-login-box { padding: 24px 22px; text-align: center; background: linear-gradient(180deg, #fff, #f1f9ff); }
 .profile-login-box p { margin: 0 0 16px; color: #3d6384; font-size: 15px; }
 .profile-login-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 20px; border: 0; border-radius: 14px; background: linear-gradient(90deg, #ff9d00, #ff6a00); color: #fff; font-size: 20px; font-weight: 800; letter-spacing: 0.3px; cursor: pointer; box-shadow: 0 10px 24px rgba(255, 125, 0, 0.35); transition: 0.2s ease; }
 .profile-login-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(255, 125, 0, 0.45); }
+.profile-logout-btn { background: linear-gradient(90deg, #f0443a, #b71c1c); box-shadow: 0 10px 24px rgba(229, 57, 53, 0.35); }
+.profile-logout-btn:hover { box-shadow: 0 14px 30px rgba(229, 57, 53, 0.45); }
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1100px) {

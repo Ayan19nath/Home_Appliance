@@ -34,11 +34,13 @@ export const saveUser = (user, remember) => {
   tell();
 };
 
-// Update the saved details after the profile is edited
+// Update the saved details after the profile is edited (nothing is saved if nobody is logged in)
 export const updateUser = (changes) => {
   const store = sessionStorage.getItem(KEY) ? sessionStorage : localStorage;
   try {
-    store.setItem(KEY, JSON.stringify({ ...JSON.parse(store.getItem(KEY)), ...changes }));
+    const saved = JSON.parse(store.getItem(KEY));
+    if (!saved?.loggedIn) return;
+    store.setItem(KEY, JSON.stringify({ ...saved, ...changes }));
     tell();
   } catch {
     // ignore invalid saved data
