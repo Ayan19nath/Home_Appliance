@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, ShoppingCart, Heart, ShieldCheck, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api";
 import Logo from "../Components/Logo";
 import GoogleButton, { googleReady } from "../Components/GoogleButton";
@@ -17,6 +17,7 @@ const features = [
 
 function Login() {
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const [mode, setMode] = useState("customer"); // "customer" or "admin"
   const [email, setEmail] = useState("");
@@ -54,6 +55,10 @@ function Login() {
         navigate("/login-success");
       }
     } catch (err) {
+      // email not verified yet: a code was emailed, open the code page
+      if (err.response?.data?.needsVerification) {
+        return navigate("/verify-otp", { state: { verifyEmail: err.response.data.email } });
+      }
       setError(err.response?.data?.message || "Login failed. Is the server running?");
     } finally {
       setLoading(false);
@@ -105,6 +110,13 @@ function Login() {
               <p className="login-form-subtitle">
                 {mode === "admin" ? "Only administrators can sign in here." : "Enter your email and password to continue."}
               </p>
+
+              {/* Shown after the email was verified */}
+              {state?.verified && !error && (
+                <div className="login-error" style={{ background: "#f0fbf4", borderColor: "#bfe6cd", color: "#159447" }}>
+                  Email verified! You can now log in.
+                </div>
+              )}
 
               {error && <div className="login-error">{error}</div>}
 

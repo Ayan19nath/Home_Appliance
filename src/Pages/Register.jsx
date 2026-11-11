@@ -27,16 +27,14 @@ function Register() {
   const [show, setShow] = useState({ password: false, confirmPassword: false });
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value });
     setError("");
-    setSuccess("");
   };
 
-  // Create the account in the database
+  // Create the account, then open the page where the emailed code is entered
   const handleSubmit = async (event) => {
     event.preventDefault();
     const { name, email, phone, dob, password, confirmPassword } = form;
@@ -58,8 +56,7 @@ function Register() {
       await api.post("/user", {
         First_name, Last_name: rest.join(" "), Email: email.trim(), Password: password, Mobile: phone.trim(), DOB: dob,
       });
-      setSuccess("Account created successfully! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 1200);
+      navigate("/verify-otp", { state: { verifyEmail: email.trim().toLowerCase() } });
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Is the server running?");
     } finally {
@@ -152,7 +149,6 @@ function Register() {
               </label>
 
               {error && <p className="register-error">{error}</p>}
-              {success && <p className="register-success">{success}</p>}
 
               <button type="submit" className="create-account-btn" disabled={loading}>
                 <UserPlus size={21} />

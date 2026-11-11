@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ShieldCheck, Mail, ArrowRight, RotateCcw, LockKeyhole } from "lucide-react";
 import api from "../api";
 import Logo from "../Components/Logo";
@@ -7,7 +7,11 @@ import "./VerifyOTP.css";
 
 function VerifyOTP() {
   const navigate = useNavigate();
-  const email = sessionStorage.getItem("homehub-reset-email") || "";
+  const { state } = useLocation();
+
+  // "verifying" = new account email check; otherwise = forgot password
+  const verifying = Boolean(state?.verifyEmail);
+  const email = state?.verifyEmail || sessionStorage.getItem("homehub-reset-email") || "";
 
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
@@ -16,8 +20,8 @@ function VerifyOTP() {
 
   // No email saved: start again
   useEffect(() => {
-    if (!email) navigate("/forgot-password");
-  }, [email, navigate]);
+    if (!email) navigate(verifying ? "/register" : "/forgot-password");
+  }, [email, verifying, navigate]);
 
   // Countdown for the "Resend" button
   useEffect(() => {
@@ -34,9 +38,14 @@ function VerifyOTP() {
 
     setLoading(true);
     try {
-      const { data } = await api.post("/user/verify-otp", { Email: email, otp });
-      sessionStorage.setItem("homehub-reset-token", data.resetToken);
-      navigate("/reset-password");
+      if (verifying) {
+        await api.post("/user/verify-email", { Email: email, otp });
+        navigate("/login", { state: { verified: true } });
+      } else {
+        const { data } = await api.post("/user/verify-otp", { Email: email, otp });
+        sessionStorage.setItem("homehub-reset-token", data.resetToken);
+        navigate("/reset-password");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
@@ -47,7 +56,7 @@ function VerifyOTP() {
   // Send a new code
   const handleResend = async () => {
     try {
-      await api.post("/user/forgot-password", { Email: email });
+      await api.post(verifying ? "/user/resend-verification" : "/user/forgot-password", { Email: email });
       setOtp("");
       setError("");
       setTimeLeft(60);
@@ -69,7 +78,7 @@ function VerifyOTP() {
         </div>
 
         <h1>Verify Your Email</h1>
-        <p className="otp-subtitle">We've sent a 6-digit code to your registered email address.</p>
+        <p className="otp-subtitle">We've sent a 6-digit code to your email address. It is valid for 10 minutes.</p>
 
         <div className="otp-mobile">
           <Mail size={18} />
@@ -114,7 +123,7 @@ function VerifyOTP() {
 
         <p className="otp-back">
           Wrong email address?
-          <Link to="/forgot-password">Change Email</Link>
+          <Link to={verifying ? "/register" : "/forgot-password"}>Change Email</Link>
         </p>
       </section>
     </main>
