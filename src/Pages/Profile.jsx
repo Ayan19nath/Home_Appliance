@@ -6,6 +6,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { useWishlist } from "../Context/WishlistContext";
+import VerifyBadge from "../Components/VerifyBadge";
 import { getUser, updateUser, clearUser, clearAdmin } from "../data/session";
 import CategoryOffer from "../assets/images/Category_offer.jpeg";
 import "./Profile.css";
@@ -60,7 +61,7 @@ function Profile() {
     };
   }, []);
 
-  // Get the latest details and the number of orders from the server
+  // Get the latest details (including the verified flag) and the number of orders from the server
   useEffect(() => {
     if (!user) return;
     api.get("/user/me").then((res) => updateUser(res.data)).catch(() => {});
@@ -157,7 +158,7 @@ function Profile() {
           {/* ================= LEFT ================= */}
           <div className="profile-left">
 
-            {/* User card */}
+            {/* User card (with the email verified badge) */}
             <div className="profile-user-card">
               <div className="profile-user-avatar">
                 {image && user ? <img src={image} alt="Profile" /> : <User size={34} />}
@@ -165,6 +166,7 @@ function Profile() {
               <div className="profile-user-details">
                 <h3>{shown("name")}</h3>
                 <p>{shown("email")}</p>
+                {user && <VerifyBadge verified={user.verified} email={user.email} back="/profile" />}
               </div>
             </div>
 

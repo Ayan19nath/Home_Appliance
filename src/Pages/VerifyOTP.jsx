@@ -9,7 +9,8 @@ function VerifyOTP() {
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  // "verifying" = new account email check; otherwise = forgot password
+  // "verifying" = email check of an account; otherwise = forgot password
+  // state.back = page to return to after verifying (set when a logged-in user verifies from the profile)
   const verifying = Boolean(state?.verifyEmail);
   const email = state?.verifyEmail || sessionStorage.getItem("homehub-reset-email") || "";
 
@@ -40,7 +41,7 @@ function VerifyOTP() {
     try {
       if (verifying) {
         await api.post("/user/verify-email", { Email: email, otp });
-        navigate("/login", { state: { verified: true } });
+        navigate(state.back || "/login", { state: { verified: true } });
       } else {
         const { data } = await api.post("/user/verify-otp", { Email: email, otp });
         sessionStorage.setItem("homehub-reset-token", data.resetToken);
@@ -122,8 +123,11 @@ function VerifyOTP() {
         </div>
 
         <p className="otp-back">
-          Wrong email address?
-          <Link to={verifying ? "/register" : "/forgot-password"}>Change Email</Link>
+          {state?.back ? (
+            <>Not now?<Link to={state.back}>Go back</Link></>
+          ) : (
+            <>Wrong email address?<Link to={verifying ? "/register" : "/forgot-password"}>Change Email</Link></>
+          )}
         </p>
       </section>
     </main>
