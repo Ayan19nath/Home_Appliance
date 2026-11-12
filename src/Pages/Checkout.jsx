@@ -4,7 +4,9 @@ import {
   ChevronRight, ShoppingBag, Plus, User, Phone,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import api from "../api";
 import { useCart } from "../Context/CartContext";
+import { getUser } from "../data/session";
 import "./Checkout.css";
 
 /* ===== DATA ===== */
@@ -15,7 +17,7 @@ const INDIAN_STATES = [
   "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Lakshadweep", "Delhi", "Puducherry", "Ladakh", "Jammu and Kashmir",
 ].sort();
 
-// [id, title, description, name saved in the order]
+// [id, title, description, name saved in the order (the server accepts only these three)]
 const PAYMENTS = [
   ["cod", "Cash on Delivery (COD)", "Pay when you receive your order.", "Cash on Delivery"],
   ["upi", "UPI", "Pay securely using UPI.", "UPI"],
@@ -31,44 +33,13 @@ const STEPS = [
 
 const EMPTY_ADDRESS = { country: "India", state: "", city: "", address: "", pincode: "", name: "", phone: "", default: false };
 const REQUIRED = ["name", "phone", "country", "state", "city", "address", "pincode"];
-const MAIL_URL = import.meta.env.VITE_MAIL_API_URL; // mail_api link from .env
 
 /* ===== HELPERS ===== */
-// Logged-in user (session first, then local)
-const getUser = () => {
-  for (const store of [sessionStorage, localStorage]) {
-    try {
-      const u = JSON.parse(store.getItem("homehub-user"));
-      if (u?.loggedIn) return u;
-    } catch {}
-  }
-  return null;
-};
-
 const addrKey = (u) => `homehub-addresses-${u?.email ? u.email.trim().toLowerCase() : "guest"}`;
 const nameOf = (a) => a?.name || a?.fullName || "HomeHub Customer";
 const money = (n) => Number(n || 0).toLocaleString("en-IN");
 const fmt = (a) =>
   a ? [a.address || a.street || a.addressLine, a.city, a.state, a.pincode, a.country].filter(Boolean).join(", ") : "";
-
-// Order confirmation email through mail_api (never blocks the order)
-const sendOrderMail = (o) => {
-  if (!MAIL_URL || !o.userEmail) return;
-  fetch(`${MAIL_URL}/order-mail`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      type: "placed",
-      to: o.userEmail,
-      name: o.userName,
-      orderId: o.id,
-      total: o.total,
-      payment: o.paymentMethod,
-      address: fmt(o.address),
-      items: o.products.map(({ name, quantity, price }) => ({ name, quantity, price })),
-    }),
-  }).catch(() => {});
-};
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -81,6 +52,7 @@ const Checkout = () => {
   const [selected, setSelected] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_ADDRESS);
+  const [placing, setPlacing] = useState(false);
 
   const pay = PAYMENTS.find((p) => p[0] === payment);
 
@@ -149,10 +121,10 @@ const Checkout = () => {
   /* ===== STEP BUTTONS ===== */
   const toPayment = () => (selected ? setStep(2) : alert("Please select or add a shipping address."));
 
-  /* ===== PLACE ORDER ===== */
-  const placeOrder = () => {
-    const user = getUser();
-    if (!user) {
+  /* ===== PLACE ORDER (saved on the server: prices, stock and emails are handled there) ===== */
+  const placeOrder = async () => {
+    if (placing) return;
+    if (!getUser()) {
       alert("Please login before placing your order.");
       return navigate("/login");
     }
@@ -165,35 +137,27 @@ const Checkout = () => {
       return navigate("/shop");
     }
 
-    const order = {
-      id: `HH${Date.now()}`,
-      userEmail: user.email?.trim().toLowerCase() || "",
-      userName: user.name || "",
-      products: cart.map((i) => ({ ...i, quantity: Number(i.quantity || 1), productId: i.id })),
-      address: selected,
-      paymentMethod: pay[3],
-      notes,
-      subtotal: Number(cartSubtotal || 0),
-      discount: Number(cartDiscount || 0),
-      shipping: 0,
-      total: Number(cartTotal || 0),
-      status: "Processing",
-      createdAt: new Date().toISOString(),
-    };
-
+    setPlacing(true);
     try {
-      let old = [];
-      try { old = JSON.parse(localStorage.getItem("homehub-orders")); } catch {}
-      localStorage.setItem("homehub-orders", JSON.stringify([order, ...(Array.isArray(old) ? old : [])]));
-
-      window.dispatchEvent(new Event("homehub-order-placed"));
-      window.dispatchEvent(new Event("homehub-orders-changed"));
-
-      sendOrderMail(order); // confirmation email
+      const { data } = await api.post("/order", {
+        items: cart.map((i) => ({ id: i.id, quantity: Number(i.quantity || 1) })),
+        address: {
+          name: nameOf(selected),
+          phone: selected.phone,
+          address: selected.address || selected.street || selected.addressLine,
+          city: selected.city,
+          state: selected.state,
+          pincode: selected.pincode,
+          country: selected.country || "India",
+        },
+        paymentMethod: pay[3],
+        notes,
+      });
       clearCart();
-      navigate("/order-success", { state: { order } });
-    } catch {
-      alert("Something went wrong while placing your order.");
+      navigate("/order-success", { state: { orderId: data.orderId, total: data.total } });
+    } catch (err) {
+      alert(err.response?.data?.message || "Something went wrong while placing your order.");
+      setPlacing(false);
     }
   };
 
@@ -213,9 +177,9 @@ const Checkout = () => {
 
   // Same button is used in the review step and in the summary
   const placeBtn = (
-    <button type="button" className="place-order-btn" onClick={placeOrder}>
+    <button type="button" className="place-order-btn" onClick={placeOrder} disabled={placing}>
       <Lock size={17} />
-      <span>Place Order</span>
+      <span>{placing ? "Placing order..." : "Place Order"}</span>
       <ChevronRight size={19} />
     </button>
   );
