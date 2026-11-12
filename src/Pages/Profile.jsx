@@ -36,20 +36,21 @@ function Profile() {
   const { wishlist } = useWishlist();
   const fileInput = useRef(null);
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);     // logged-in customer (saved in this browser)
+  const [admin, setAdmin] = useState(null);   // logged-in admin (loaded from the server)
   const [editing, setEditing] = useState(false);
   const [image, setImage] = useState("");
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
   const [orderCount, setOrderCount] = useState(0);
 
+  const account = user || admin; // whoever is logged in (customer or admin)
+
   // Load the logged-in customer and refresh when the login changes
   useEffect(() => {
     const load = () => {
       const current = getUser();
       setUser(current);
-      setForm(current ? { name: current.name || "", email: current.email || "", phone: current.phone || "", dob: current.dob || "" } : emptyForm);
-      setImage(current ? localStorage.getItem(imageKey(current.email)) || "" : "");
       if (!current) setEditing(false);
     };
     load();
@@ -61,35 +62,47 @@ function Profile() {
     };
   }, []);
 
-  // Get the latest details (including the verified flag) and the number of orders from the server
+  // No customer login but an admin is logged in: load the admin's details from the server
   useEffect(() => {
-    if (!user) return;
-    api.get("/user/me").then((res) => updateUser(res.data)).catch(() => {});
+    if (user || !localStorage.getItem("adminToken")) return setAdmin(null);
+    api.get("/user/me").then((res) => setAdmin(res.data)).catch(() => {});
+  }, [user]);
+
+  // Fill the form and the picture when the account changes
+  useEffect(() => {
+    setForm(account ? { name: account.name || "", email: account.email || "", phone: account.phone || "", dob: account.dob || "" } : emptyForm);
+    setImage(account ? localStorage.getItem(imageKey(account.email)) || "" : "");
+  }, [account]);
+
+  // Get the latest details (customers) and the number of orders from the server
+  useEffect(() => {
+    if (!account) return;
+    if (user) api.get("/user/me").then((res) => updateUser(res.data)).catch(() => {});
     api.get("/order/mine").then((res) => setOrderCount(res.data.length)).catch(() => {});
-  }, [user?.id]);
+  }, [account?.id]);
 
   // Number of saved addresses (kept in this browser)
   let addressCount = 0;
   try {
-    addressCount = JSON.parse(localStorage.getItem(`homehub-addresses-${user?.email?.toLowerCase()}`) || "[]").length;
+    addressCount = JSON.parse(localStorage.getItem(`homehub-addresses-${account?.email?.toLowerCase()}`) || "[]").length;
   } catch {
     addressCount = 0;
   }
 
-  const shown = (key) => (user ? user[key] || "Not available" : guest[key]);
+  const shown = (key) => (account ? account[key] || "Not available" : guest[key]);
 
   // Choose a new profile picture (saved in this browser)
   const handlePicture = (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (!user || !file) return;
+    if (!account || !file) return;
     if (!file.type.startsWith("image/")) return alert("Please select a valid image.");
     if (file.size > 5 * 1024 * 1024) return alert("Please select an image smaller than 5MB.");
 
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        localStorage.setItem(imageKey(user.email), reader.result);
+        localStorage.setItem(imageKey(account.email), reader.result);
         setImage(reader.result);
       } catch {
         alert("This image is too large to save. Please choose a smaller one.");
@@ -98,14 +111,15 @@ function Profile() {
     reader.readAsDataURL(file);
   };
 
-  const openPicker = () => (user ? fileInput.current?.click() : navigate("/login"));
+  const openPicker = () => (account ? fileInput.current?.click() : navigate("/login"));
 
   // Save the changes in the database (the email cannot be changed)
   const handleSave = async () => {
     if (!form.name.trim()) return setError("Please enter your name.");
     try {
       const { data } = await api.put("/user/me", form);
-      updateUser(data);
+      if (user) updateUser(data);
+      else setAdmin(data);
       setEditing(false);
       setError("");
     } catch (err) {
@@ -116,7 +130,7 @@ function Profile() {
   const handleCancel = () => {
     setEditing(false);
     setError("");
-    setForm({ name: user?.name || "", email: user?.email || "", phone: user?.phone || "", dob: user?.dob || "" });
+    setForm({ name: account?.name || "", email: account?.email || "", phone: account?.phone || "", dob: account?.dob || "" });
   };
 
   // Log out (customer and admin login are both cleared), then open the home page
@@ -128,10 +142,10 @@ function Profile() {
 
   // Quick info boxes: [label, value, icon, page to open]
   const quickInfo = [
-    ["Total Orders", user ? orderCount : 0, Package, "/orders"],
-    ["Wishlist Items", user ? wishlist.length : 0, Heart, "/wishlist"],
-    ["Saved Addresses", user ? addressCount : 0, MapPin, "/addresses"],
-    ["Loyalty Points", user ? 150 : 0, Star, null],
+    ["Total Orders", account ? orderCount : 0, Package, "/orders"],
+    ["Wishlist Items", account ? wishlist.length : 0, Heart, "/wishlist"],
+    ["Saved Addresses", account ? addressCount : 0, MapPin, "/addresses"],
+    ["Loyalty Points", account ? 150 : 0, Star, null],
   ];
 
   return (
@@ -161,12 +175,12 @@ function Profile() {
             {/* User card (with the email verified badge) */}
             <div className="profile-user-card">
               <div className="profile-user-avatar">
-                {image && user ? <img src={image} alt="Profile" /> : <User size={34} />}
+                {image && account ? <img src={image} alt="Profile" /> : <User size={34} />}
               </div>
               <div className="profile-user-details">
                 <h3>{shown("name")}</h3>
                 <p>{shown("email")}</p>
-                {user && <VerifyBadge verified={user.verified} email={user.email} back="/profile" />}
+                {account && <VerifyBadge verified={account.verified} email={account.email} back="/profile" />}
               </div>
             </div>
 
@@ -177,7 +191,7 @@ function Profile() {
                   <User size={21} />
                   <h2><b>Profile Information</b></h2>
                 </div>
-                {!editing && user && (
+                {!editing && account && (
                   <button type="button" className="edit-profile-button" onClick={() => setEditing(true)}>
                     <Pencil size={17} />
                     Edit Profile
@@ -189,7 +203,7 @@ function Profile() {
               <div className="profile-picture-section">
                 <div className="profile-picture-wrapper">
                   <div className="profile-large-avatar">
-                    {image && user ? <img src={image} alt="Profile" /> : <User size={52} />}
+                    {image && account ? <img src={image} alt="Profile" /> : <User size={52} />}
                   </div>
                   <button type="button" className="profile-camera-button" title="Change Profile Picture" onClick={openPicker}>
                     <Camera size={17} />
@@ -233,7 +247,7 @@ function Profile() {
 
               {error && <p style={{ color: "#d23939", padding: "0 18px 12px", fontSize: "13px" }}>{error}</p>}
 
-              {editing && user && (
+              {editing && account && (
                 <div className="profile-edit-actions">
                   <button type="button" className="profile-cancel-button" onClick={handleCancel}>Cancel</button>
                   <button type="button" className="profile-save-button" onClick={handleSave}>Save Changes</button>
@@ -294,16 +308,16 @@ function Profile() {
               ))}
             </div>
 
-            {/* Login button (visitors) or Log out button (logged-in customers) */}
+            {/* Login button (visitors) or Log out button (customers and admins) */}
             <div className="profile-login-box">
-              <p>{user ? "You are logged in. Log out when you are done." : "Sign in to see your orders, wishlist and saved addresses."}</p>
+              <p>{account ? "You are logged in. Log out when you are done." : "Sign in to see your orders, wishlist and saved addresses."}</p>
               <button
                 type="button"
-                className={`profile-login-btn${user ? " profile-logout-btn" : ""}`}
-                onClick={user ? handleLogout : () => navigate("/login")}
+                className={`profile-login-btn${account ? " profile-logout-btn" : ""}`}
+                onClick={account ? handleLogout : () => navigate("/login")}
               >
-                {user ? <LogOut size={24} /> : <LogIn size={24} />}
-                {user ? "Log out from my account" : "Login to Your Account"}
+                {account ? <LogOut size={24} /> : <LogIn size={24} />}
+                {account ? "Log out from my account" : "Login to Your Account"}
               </button>
             </div>
           </aside>
