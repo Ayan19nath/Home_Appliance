@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { categoryIcons } from "../data/categoryIcons";
+import AdminCoupons from "../Components/AdminCoupons";
 import AdminItems from "../Components/AdminItems";
+import AdminOrders from "../Components/AdminOrders";
 import AdminUsers from "../Components/AdminUsers";
+import VerifyBadge from "../Components/VerifyBadge";
 import "./Admin.css";
 
 const empty = { cat_name: "", cat_description: "", cat_icon: "" };
@@ -11,6 +14,7 @@ const empty = { cat_name: "", cat_description: "", cat_icon: "" };
 export default function AdminDashboard() {
   const [categories, setCategories] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [me, setMe] = useState(null);         // the logged-in admin (email and verified status)
   const [form, setForm] = useState(empty);
   const [image, setImage] = useState(null);   // image file chosen from the computer
   const [fileKey, setFileKey] = useState(0);  // changing this clears the file picker
@@ -30,6 +34,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadCategories();
+    api.get("/user/me").then((res) => setMe(res.data)).catch(() => {});
     if (isOwner) loadRequests();
   }, [isOwner]);
 
@@ -102,11 +107,12 @@ export default function AdminDashboard() {
   return (
     <div className="admin-page">
 
-      {/* ========== HEADER ========== */}
+      {/* ========== HEADER (with the email verified badge) ========== */}
       <div className="admin-top">
         <div>
           <h2>Admin Dashboard</h2>
-          <p>Manage admin requests, categories, users and products</p>
+          <p>Manage orders, coupons, admin requests, categories, users and products</p>
+          {me && <VerifyBadge verified={me.verified} email={me.email} back="/admin/dashboard" />}
         </div>
         <button onClick={logout}>Logout</button>
       </div>
@@ -123,6 +129,12 @@ export default function AdminDashboard() {
       </div>
 
       {error && <p className="admin-error">{error}</p>}
+
+      {/* ========== ORDERS ========== */}
+      <AdminOrders />
+
+      {/* ========== COUPONS ========== */}
+      <AdminCoupons />
 
       {/* ========== ADMIN REQUESTS (owner only) ========== */}
       {isOwner && (

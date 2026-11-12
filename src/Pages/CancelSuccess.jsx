@@ -1,54 +1,25 @@
-import React, { useEffect, useState } from "react";
-import {
-  ArrowRight,
-  CheckCircle2,
-  FileText,
-  Home,
-  RefreshCw,
-} from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ArrowRight, CheckCircle2, FileText, Home, RefreshCw } from "lucide-react";
+import { Link, useLocation, useParams } from "react-router-dom";
+import api from "../api";
 import "./CancelSuccess.css";
 
+const when = (v) => {
+  const d = new Date(v);
+  return v && !Number.isNaN(d.getTime())
+    ? d.toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })
+    : "N/A";
+};
+
 const CancelSuccess = () => {
-  const { orderId } = useParams();
-  const [order, setOrder] = useState(null);
+  const { orderId } = useParams(); // order number from the page link
+  const { state } = useLocation();
+  const [order, setOrder] = useState(state?.order || null); // CancelOrder passes the cancelled order
 
+  // After a refresh the state is gone, so load the order from the server
   useEffect(() => {
-    try {
-      const savedOrders = JSON.parse(
-        localStorage.getItem("homehub-orders") || "[]"
-      );
-
-      const foundOrder = savedOrders.find(
-        (item) =>
-          String(item.id) === String(orderId) ||
-          String(item.orderId) === String(orderId)
-      );
-
-      setOrder(foundOrder || null);
-    } catch (error) {
-      console.error("Cancelled Order Load Error:", error);
-    }
+    if (!order) api.get(`/order/track/${orderId}`).then((res) => setOrder(res.data)).catch(() => {});
   }, [orderId]);
-
-  const formatDate = (dateValue) => {
-    if (!dateValue) return "N/A";
-
-    const date = new Date(dateValue);
-
-    if (Number.isNaN(date.getTime())) return dateValue;
-
-    return date.toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const displayOrderId =
-    order?.orderId || order?.id || orderId;
 
   return (
     <main className="cancel-success-page">
@@ -70,15 +41,11 @@ const CancelSuccess = () => {
 
         {/* ORDER SUMMARY */}
         <div className="cancel-success-summary">
-
           <div className="success-summary-item">
-            <div className="success-summary-icon">
-              <FileText size={21} />
-            </div>
-
+            <div className="success-summary-icon"><FileText size={21} /></div>
             <div>
               <span>Order ID</span>
-              <strong>#{displayOrderId}</strong>
+              <strong>#{order?.orderId || orderId}</strong>
             </div>
           </div>
 
@@ -87,27 +54,19 @@ const CancelSuccess = () => {
           <div className="success-summary-item">
             <div>
               <span>Cancelled On</span>
-              <strong>
-                {formatDate(order?.cancelledAt)}
-              </strong>
+              <strong>{when(order?.cancelledAt)}</strong>
             </div>
           </div>
 
           <div className="success-summary-divider" />
 
           <div className="success-summary-item">
-            <div className="refund-summary-icon">
-              <RefreshCw size={21} />
-            </div>
-
+            <div className="refund-summary-icon"><RefreshCw size={21} /></div>
             <div>
               <span>Refund Status</span>
-              <strong className="refund-processing">
-                {order?.refundStatus || "Processing"}
-              </strong>
+              <strong className="refund-processing">{order?.refundStatus || "Processing"}</strong>
             </div>
           </div>
-
         </div>
 
         {/* REASON */}
@@ -120,24 +79,15 @@ const CancelSuccess = () => {
 
         {/* BUTTONS */}
         <div className="cancel-success-actions">
-
-          <Link
-            to="/"
-            className="back-home-success-button"
-          >
+          <Link to="/" className="back-home-success-button">
             <Home size={17} />
             Back to Home
             <ArrowRight size={17} />
           </Link>
-
-          <Link
-            to="/orders"
-            className="view-history-success-button"
-          >
+          <Link to="/orders" className="view-history-success-button">
             <FileText size={17} />
             View Order History
           </Link>
-
         </div>
 
       </section>
