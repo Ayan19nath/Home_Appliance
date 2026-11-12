@@ -12,7 +12,7 @@ export default function VerifyBadge({ verified, email, back }) {
 
   if (verified === undefined) return null; // unknown until the server answers
 
-  const look = { display: "inline-flex", alignItems: "center", gap: 5, marginTop: 6, padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 700, border: 0 };
+  const look = { display: "inline-flex", alignItems: "center", gap: 5, height: "auto", marginTop: 6, marginRight: 0, padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 700, border: 0 };
 
   if (verified) {
     return <span style={{ ...look, background: "#e8f8ef", color: "#159447" }}><BadgeCheck size={14} /> Verified</span>;
@@ -37,7 +37,7 @@ export default function VerifyBadge({ verified, email, back }) {
         style={{ ...look, background: "#fff4e5", color: "#c2410c", cursor: "pointer" }}>
         <ShieldAlert size={14} /> {busy ? "Sending code..." : "Not verified - click to verify"}
       </button>
-      {error && <span style={{ display: "block", color: "#d23939", fontSize: 12 }}>{error}</span>}
+      {error && <span style={{ display: "block", color: "#ffd2d2", fontSize: 12 }}>{error}</span>}
     </>
   );
 }
