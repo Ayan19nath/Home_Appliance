@@ -43,7 +43,7 @@ const fmt = (a) =>
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cart, cartSubtotal, cartDiscount, cartTotal, clearCart } = useCart();
+  const { cart, cartSubtotal, cartDiscount, cartTotal, clearCart, coupon, couponDiscount } = useCart();
 
   const [step, setStep] = useState(1);
   const [payment, setPayment] = useState("cod");
@@ -121,7 +121,7 @@ const Checkout = () => {
   /* ===== STEP BUTTONS ===== */
   const toPayment = () => (selected ? setStep(2) : alert("Please select or add a shipping address."));
 
-  /* ===== PLACE ORDER (saved on the server: prices, stock and emails are handled there) ===== */
+  /* ===== PLACE ORDER (saved on the server: prices, discount, stock and emails are handled there) ===== */
   const placeOrder = async () => {
     if (placing) return;
     if (!getUser()) {
@@ -141,6 +141,7 @@ const Checkout = () => {
     try {
       const { data } = await api.post("/order", {
         items: cart.map((i) => ({ id: i.id, quantity: Number(i.quantity || 1) })),
+        couponCode: coupon?.code,
         address: {
           name: nameOf(selected),
           phone: selected.phone,
@@ -472,6 +473,12 @@ const Checkout = () => {
               <span>Discount</span>
               <strong className="checkout-discount">-₹{money(cartDiscount)}</strong>
             </div>
+            {couponDiscount > 0 && (
+              <div className="checkout-summary-row">
+                <span>Coupon ({coupon.code})</span>
+                <strong className="checkout-discount">-₹{money(couponDiscount)}</strong>
+              </div>
+            )}
             <div className="checkout-summary-row">
               <span>Shipping Charges</span>
               <strong className="checkout-free">Free</strong>
