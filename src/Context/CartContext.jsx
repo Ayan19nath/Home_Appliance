@@ -14,6 +14,9 @@ const read = (key, fallback) => {
 
 const qty = (value) => Math.max(1, Number(value) || 1);
 
+// Most pieces of a product allowed in the cart (the stock saved when it was added)
+const maxOf = (item) => (item.stock == null ? Infinity : Number(item.stock) || 0);
+
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     const saved = read("homehub-cart", []);
@@ -66,14 +69,22 @@ export const CartProvider = ({ children }) => {
   const removeCoupon = () => setCoupon(null);
 
   /* ===== CART ===== */
-  // Add a product (the same product adds up)
+  // Add a product (the same product adds up). Returns "" or a message when the stock limit stopped it.
   const addProductToCart = (product, quantity = 1) => {
-    if (!product || product.id === undefined) return;
+    if (!product || product.id === undefined) return "";
+
+    const max = maxOf(product);
+    const have = Number(cart.find((item) => item.id === product.id)?.quantity || 0);
+    const room = max - have;
+    if (room <= 0) return `Only ${max} available`;
+
+    const add = Math.min(qty(quantity), room);
     setCart((current) =>
       current.some((item) => item.id === product.id)
-        ? current.map((item) => (item.id === product.id ? { ...item, quantity: qty(item.quantity) + qty(quantity) } : item))
-        : [...current, { ...product, quantity: qty(quantity) }]
+        ? current.map((item) => (item.id === product.id ? { ...item, quantity: Number(item.quantity || 0) + add } : item))
+        : [...current, { ...product, quantity: add }]
     );
+    return add < qty(quantity) ? `Only ${max} available` : "";
   };
 
   const addToCart = (product) => addProductToCart(product, 1);
@@ -86,7 +97,14 @@ export const CartProvider = ({ children }) => {
         .filter((item) => Number(item.quantity) > 0)
     );
 
-  const increaseQuantity = (id) => changeQuantity(id, 1);
+  const increaseQuantity = (id) => {
+    const item = cart.find((i) => i.id === id);
+    if (!item) return "";
+    if (Number(item.quantity) >= maxOf(item)) return `Only ${maxOf(item)} available`;
+    changeQuantity(id, 1);
+    return "";
+  };
+
   const decreaseQuantity = (id) => changeQuantity(id, -1);
   const removeFromCart = (id) => setCart((current) => current.filter((item) => item.id !== id));
 

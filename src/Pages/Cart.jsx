@@ -3,6 +3,7 @@ import { Minus, Plus, Trash2, ShoppingCart, Tag, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
 import { getUser } from "../data/session";
+import { stockInfo } from "../data/stock";
 import "./Cart.css";
 
 const money = (n) => Number(n || 0).toLocaleString("en-IN");
@@ -60,38 +61,54 @@ const Cart = () => {
 
           {/* ===== LEFT: CART PRODUCTS ===== */}
           <div className="cart-products">
-            {cart.map((item) => (
-              <div className="cart-product" key={item.id}>
-                <div className="cart-product-image">
-                  <img src={item.image} alt={item.name} />
-                </div>
+            {cart.map((item) => {
+              const [stockText, stockColor] = stockInfo(item.stock);
+              const atMax = item.stock != null && Number(item.quantity) >= Number(item.stock); // no more pieces in stock
 
-                <div className="cart-product-info">
-                  <Link to={`/product/${item.id}`} className="cart-product-name">{item.name}</Link>
-                  <p className="cart-brand">Brand: {item.brand}</p>
-
-                  <div className="cart-price">
-                    <strong>₹{money(item.price)}</strong>
-                    {item.oldPrice > item.price && <del>₹{money(item.oldPrice)}</del>}
+              return (
+                <div className="cart-product" key={item.id}>
+                  <div className="cart-product-image">
+                    <img src={item.image} alt={item.name} />
                   </div>
 
-                  <div className="cart-actions">
-                    <div className="quantity-control">
-                      <button type="button" onClick={() => decreaseQuantity(item.id)}><Minus size={15} /></button>
-                      <span>{item.quantity}</span>
-                      <button type="button" onClick={() => increaseQuantity(item.id)}><Plus size={15} /></button>
+                  <div className="cart-product-info">
+                    <Link to={`/product/${item.id}`} className="cart-product-name">{item.name}</Link>
+                    <p className="cart-brand">Brand: {item.brand}</p>
+                    {item.stock != null && Number(item.stock) <= 5 && (
+                      <p style={{ margin: "-6px 0 10px", color: stockColor, fontSize: 13, fontWeight: 600 }}>{stockText}</p>
+                    )}
+
+                    <div className="cart-price">
+                      <strong>₹{money(item.price)}</strong>
+                      {item.oldPrice > item.price && <del>₹{money(item.oldPrice)}</del>}
                     </div>
 
-                    <button type="button" className="remove-cart" onClick={() => removeFromCart(item.id)}>
-                      <Trash2 size={15} />
-                      Remove
-                    </button>
-                  </div>
-                </div>
+                    <div className="cart-actions">
+                      <div className="quantity-control">
+                        <button type="button" onClick={() => decreaseQuantity(item.id)}><Minus size={15} /></button>
+                        <span>{item.quantity}</span>
+                        <button
+                          type="button"
+                          disabled={atMax}
+                          title={atMax ? "No more pieces in stock" : "Add one more"}
+                          style={atMax ? { opacity: 0.4, cursor: "not-allowed" } : undefined}
+                          onClick={() => increaseQuantity(item.id)}
+                        >
+                          <Plus size={15} />
+                        </button>
+                      </div>
 
-                <div className="cart-item-total">₹{money(Number(item.price || 0) * Number(item.quantity || 1))}</div>
-              </div>
-            ))}
+                      <button type="button" className="remove-cart" onClick={() => removeFromCart(item.id)}>
+                        <Trash2 size={15} />
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="cart-item-total">₹{money(Number(item.price || 0) * Number(item.quantity || 1))}</div>
+                </div>
+              );
+            })}
           </div>
 
           {/* ===== RIGHT: ORDER SUMMARY ===== */}

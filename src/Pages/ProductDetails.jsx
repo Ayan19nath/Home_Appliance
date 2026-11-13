@@ -7,6 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../api";
 import { useWishlist } from "../Context/WishlistContext";
 import { useCart } from "../Context/CartContext";
+import { stockInfo } from "../data/stock";
 import "./ProductDetails.css";
 
 // Sample reviews (customer reviews are not stored in the database yet)
@@ -28,14 +29,14 @@ function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { wishlist, toggleWishlist } = useWishlist();
-  const { addProductToCart } = useCart();
+  const { addProductToCart, cart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [status, setStatus] = useState("loading"); // loading, ready or missing
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("info");
   const [selectedImage, setSelectedImage] = useState(0);
-  const [addedToCart, setAddedToCart] = useState(false);
+  const [note, setNote] = useState(null); // { text, ok } shown for 2.5 seconds after "Add to Cart"
 
   // Load this product from the database
   useEffect(() => {
@@ -69,17 +70,22 @@ function ProductDetails() {
 
   const images = product.images?.length ? product.images : [product.image];
   const inStock = Number(product.stock) > 0;
+  const inCart = Number(cart.find((item) => item.id === product.id)?.quantity || 0);
+  const room = Math.max(0, Number(product.stock) - inCart); // pieces still allowed in the cart
+  const [stockText, stockColor] = stockInfo(product.stock);
+  const canAdd = inStock && room > 0;
   const isWishlisted = wishlist.some((item) => item.id === product.id);
   const money = (value) => `₹${Number(value).toLocaleString("en-IN")}`;
 
   // Gallery: go to an image (loops around)
   const goTo = (index) => setSelectedImage((index + images.length) % images.length);
 
-  // Add to cart and show a message for 2.5 seconds
+  // Add to cart and show a message for 2.5 seconds (a warning if the stock limit stopped it)
   const handleAddToCart = () => {
-    addProductToCart(product, quantity);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2500);
+    const problem = addProductToCart(product, quantity);
+    setNote({ text: problem || "Product added to cart successfully", ok: !problem });
+    setQuantity(1);
+    setTimeout(() => setNote(null), 2500);
   };
 
   // Buy now: add to cart and open the cart
@@ -207,12 +213,10 @@ function ProductDetails() {
           <div className="product-stock">
             <span>Brand: <strong>{product.brand}</strong></span>
             <span className="stock-divider">|</span>
-            <span className="in-stock" style={inStock ? undefined : { color: "#d23939" }}>
-              ● {inStock ? "In Stock" : "Out of Stock"}
-            </span>
+            <span className="in-stock" style={{ color: stockColor }}>● {stockText}</span>
           </div>
 
-          {/* Quantity */}
+          {/* Quantity (never more than the stock) */}
           <div className="quantity-area">
             <strong>Quantity:</strong>
             <div className="quantity-control">
@@ -220,30 +224,36 @@ function ProductDetails() {
                 <Minus size={18} />
               </button>
               <span>{quantity}</span>
-              <button type="button" onClick={() => setQuantity((q) => q + 1)}>
+              <button type="button" disabled={quantity >= room} onClick={() => setQuantity((q) => Math.min(room, q + 1))}>
                 <Plus size={18} />
               </button>
             </div>
+            {inCart > 0 && <small style={{ color: "#667085" }}>{inCart} already in your cart</small>}
           </div>
 
           {/* Add to cart and buy now */}
           <div className="main-action-buttons">
-            <button type="button" className="add-cart-button" onClick={handleAddToCart} disabled={!inStock}>
-              {addedToCart ? <CheckCircle size={20} /> : <ShoppingCart size={20} />}
-              {!inStock ? "Out of Stock" : addedToCart ? "Added to Cart ✓" : "Add to Cart"}
+            <button type="button" className="add-cart-button" onClick={handleAddToCart} disabled={!canAdd}>
+              {note?.ok ? <CheckCircle size={20} /> : <ShoppingCart size={20} />}
+              {!inStock ? "Out of Stock" : room === 0 ? "Maximum already in cart" : note?.ok ? "Added to Cart ✓" : "Add to Cart"}
             </button>
 
-            <button type="button" className="buy-now-button" onClick={handleBuyNow} disabled={!inStock}>
+            <button type="button" className="buy-now-button" onClick={handleBuyNow} disabled={!canAdd}>
               <Zap size={20} />
               Buy Now
             </button>
           </div>
 
-          {/* Success message */}
-          {addedToCart && (
-            <div className="cart-success-message" role="status" aria-live="polite">
-              <CheckCircle size={17} />
-              <span>Product added to cart successfully</span>
+          {/* Message after adding */}
+          {note && (
+            <div
+              className="cart-success-message"
+              role="status"
+              aria-live="polite"
+              style={note.ok ? undefined : { color: "#e67e00" }}
+            >
+              {note.ok && <CheckCircle size={17} />}
+              <span>{note.text}</span>
             </div>
           )}
 

@@ -5,15 +5,17 @@ import { useState } from "react";
 import QuantityControl from "./QuantityControl";
 import { useWishlist } from "../Context/WishlistContext.jsx";
 import { useCart } from "../Context/CartContext.jsx";
+import { stockInfo } from "../data/stock";
 
 function ShopProductCard({ product }) {
   const navigate = useNavigate();
-  const [addedToCart, setAddedToCart] = useState(false);
+  const [note, setNote] = useState(null); // { text, ok } shown for 2.5 seconds after "Add to Cart"
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
 
   const wishlisted = isWishlisted(product.id);
   const inStock = Number(product.stock) > 0;
+  const [stockText, stockColor] = stockInfo(product.stock);
 
   // Open the product page
   const openProduct = () => navigate(`/product/${product.id}`);
@@ -24,12 +26,12 @@ function ShopProductCard({ product }) {
     toggleWishlist(product);
   };
 
-  // Add to cart and show a message for 2.5 seconds
+  // Add to cart (a message appears if the stock limit stopped it)
   const handleAddToCart = (event) => {
     event.stopPropagation();
-    addToCart(product);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2500);
+    const problem = addToCart(product);
+    setNote({ text: problem || "Product added to cart successfully", ok: !problem });
+    setTimeout(() => setNote(null), 2500);
   };
 
   return (
@@ -87,9 +89,7 @@ function ShopProductCard({ product }) {
         {/* Brand and stock */}
         <div className="product-bottom">
           <span>Brand: {product.brand || "HomeHub"}</span>
-          <span className="stock" style={inStock ? undefined : { color: "#d23939" }}>
-            ● {inStock ? "In Stock" : "Out of Stock"}
-          </span>
+          <span className="stock" style={{ color: stockColor }}>● {stockText}</span>
         </div>
 
         <QuantityControl />
@@ -102,7 +102,7 @@ function ShopProductCard({ product }) {
           disabled={!inStock}
           style={inStock ? undefined : { opacity: 0.6, cursor: "not-allowed" }}
         >
-          {addedToCart ? (
+          {note?.ok ? (
             <>
               <CheckCircle size={17} />
               Added to Cart ✓
@@ -115,8 +115,8 @@ function ShopProductCard({ product }) {
           )}
         </button>
 
-        {/* Success message */}
-        {addedToCart && (
+        {/* Message after adding */}
+        {note && (
           <div
             role="status"
             aria-live="polite"
@@ -128,10 +128,11 @@ function ShopProductCard({ product }) {
               gap: "7px",
               fontSize: "14px",
               fontWeight: "600",
+              color: note.ok ? undefined : "#e67e00",
             }}
           >
-            <CheckCircle size={16} />
-            <span>Product added to cart successfully</span>
+            {note.ok && <CheckCircle size={16} />}
+            <span>{note.text}</span>
           </div>
         )}
       </div>
