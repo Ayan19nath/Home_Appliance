@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
+import ThemeToggle from "./ThemeToggle";
 
 // Main navigation links: [path, label]
 const links = [["/", "Home"], ["/shop", "Shop"], ["/categories", "Categories"], ["/about", "About"], ["/contact", "Contact"]];
@@ -166,6 +167,9 @@ function Navbar() {
           <NavLink to="/profile" className={actionClass("profile-button")} title="Profile">
             <UserCircle size={35} />
           </NavLink>
+
+          {/* COLOUR MODE: light, dark or default */}
+          <ThemeToggle />
 
           {/* 3-LINE MENU */}
           <div className="profile-menu-wrapper" ref={menuRef}>

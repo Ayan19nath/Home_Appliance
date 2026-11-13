@@ -1,0 +1,20 @@
+/* ========== COLOUR MODE BUTTON (navbar) ========== */
+.theme-toggle { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: 0.25s ease; }
+.theme-toggle:hover { color: #1ca8ff; transform: translateY(-1px); }
+
+/* ========== DARK MODE ==========
+   Light and dark are flipped and the hue is turned back, so blue stays blue.
+   Pictures, videos and dark banners are flipped back so they keep their real colours. */
+html.dark { background: #fff; filter: invert(0.9) hue-rotate(180deg); }
+
+/* Pictures and videos */
+html.dark :is(img, video) { filter: invert(1) hue-rotate(180deg); }
+
+/* Dark or photo blocks that already look right: flipped back as a whole */
+html.dark :is(.navbar, .footer, .hero, .about-hero, .contact-hero, .policy-hero, .profile-hero, .orders-hero, .checkout-hero, .categories-hero, .category-banner, .category-deals-card, .wishlist-banner, .wishlist-save-banner, .profile-promo-banner) { filter: invert(1) hue-rotate(180deg); }
+
+/* Pictures inside those blocks must not be flipped twice */
+html.dark :is(.navbar, .footer, .hero, .about-hero, .contact-hero, .policy-hero, .profile-hero, .orders-hero, .checkout-hero, .categories-hero, .category-banner, .category-deals-card, .wishlist-banner, .wishlist-save-banner, .profile-promo-banner) :is(img, video) { filter: none; }
+
+/* Login pages: a plain dark background instead of the photo */
+html.dark :is(.login-background, .login-success-background) { background-image: none; background-color: #fff; }
