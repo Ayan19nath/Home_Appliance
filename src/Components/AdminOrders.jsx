@@ -21,8 +21,11 @@ const small = { color: "#667d91", fontSize: 12 };
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("All");
+  const [codes, setCodes] = useState({}); // delivery code typed for each order
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
+
+  const isOwner = localStorage.getItem("adminOwner") === "true";
 
   // Load every order from the server
   const load = () =>
@@ -34,13 +37,15 @@ export default function AdminOrders() {
     load();
   }, []);
 
-  // Move an order one step forward (the server emails the customer)
-  const advance = async (o) => {
+  // Move an order one step forward (the server emails the customer).
+  // Delivered needs the customer's code; skipOtp is for the owner only.
+  const advance = async (o, skipOtp = false) => {
     const next = NEXT[o.status];
     if (!window.confirm(`Mark order #${o.orderId} as "${next}"? The customer will get an email.`)) return;
     setBusy(o.id);
     try {
-      await api.put(`/order/${o.id}/status`, { status: next });
+      await api.put(`/order/${o.id}/status`, { status: next, otp: codes[o.id], skipOtp });
+      setCodes({ ...codes, [o.id]: "" });
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "Could not change the status.");
@@ -89,6 +94,7 @@ export default function AdminOrders() {
                   </td>
                   <td>
                     {o.items.map((i, n) => <div key={n}>{i.name} × {i.quantity}</div>)}
+                    {o.couponCode && <div style={small}>Coupon: {o.couponCode} (-₹{money(o.couponDiscount)})</div>}
                     {o.notes && <div style={small}>Note: {o.notes}</div>}
                   </td>
                   <td>
@@ -100,7 +106,26 @@ export default function AdminOrders() {
                     {o.status === "Cancelled" && <div style={small}>{o.cancellationReason}</div>}
                   </td>
                   <td>
-                    {NEXT[o.status] ? (
+                    {o.status === "Out for Delivery" ? (
+                      // delivery: the customer tells the delivery person the 6-digit code
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 170 }}>
+                        <input
+                          placeholder="Customer's 6-digit code"
+                          maxLength={6}
+                          inputMode="numeric"
+                          value={codes[o.id] || ""}
+                          onChange={(e) => setCodes({ ...codes, [o.id]: e.target.value.replace(/\D/g, "") })}
+                        />
+                        <button type="button" className="approve" disabled={busy === o.id} onClick={() => advance(o)}>
+                          {busy === o.id ? "Saving..." : "Mark Delivered"}
+                        </button>
+                        {isOwner && (
+                          <button type="button" className="edit" disabled={busy === o.id} onClick={() => advance(o, true)}>
+                            Deliver without code
+                          </button>
+                        )}
+                      </div>
+                    ) : NEXT[o.status] ? (
                       <button type="button" className="approve" disabled={busy === o.id} onClick={() => advance(o)}>
                         {busy === o.id ? "Saving..." : `Mark ${NEXT[o.status]}`}
                       </button>

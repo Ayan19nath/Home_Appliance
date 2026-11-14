@@ -190,11 +190,17 @@ function Orders() {
                         </div>
                       </div>
 
-                      {/* ORDER INFORMATION */}
+                      {/* ORDER INFORMATION (with the delivery code while the order is active) */}
                       <div className="order-information">
                         <p><span>Order ID:</span> #{o.orderId}</p>
                         <p><span>Placed on:</span> {when(o.createdAt)}</p>
                         <p><span>Payment:</span> {o.paymentMethod}</p>
+                        {o.deliveryOtp && (
+                          <div style={{ marginTop: 8, padding: "8px 10px", borderRadius: 7, background: "#fff6df", border: "1px solid #f1d9a0", color: "#7a5200", fontSize: 11 }}>
+                            Delivery code: <strong style={{ fontSize: 17, letterSpacing: 3 }}>{o.deliveryOtp}</strong>
+                            <div>Give it to the delivery person only when you receive the order.</div>
+                          </div>
+                        )}
                       </div>
 
                       {/* STATUS */}

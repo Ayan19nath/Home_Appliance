@@ -1,9 +1,17 @@
+import { useEffect, useState } from "react";
 import { Check, Package, ArrowRight, ShoppingBag } from "lucide-react";
 import { Link, Navigate, useLocation } from "react-router-dom";
+import api from "../api";
 import "./OrderSuccess.css";
 
 function OrderSuccess() {
   const { orderId, total } = useLocation().state || {}; // sent by Checkout after the server saved the order
+  const [code, setCode] = useState("");
+
+  // Load the delivery code of this order
+  useEffect(() => {
+    if (orderId) api.get(`/order/track/${orderId}`).then((res) => setCode(res.data.deliveryOtp || "")).catch(() => {});
+  }, [orderId]);
 
   if (!orderId) return <Navigate to="/orders" replace />;
 
@@ -25,6 +33,17 @@ function OrderSuccess() {
           <p className="order-success-total">
             Total Amount: <strong>₹{Number(total).toLocaleString("en-IN")}</strong>
           </p>
+        )}
+
+        {/* Delivery code: the customer gives it to the delivery person */}
+        {code && (
+          <div style={{ margin: "22px auto 0", maxWidth: 430, padding: "14px 18px", borderRadius: 12, background: "#fff6df", border: "1px solid #f1d9a0", color: "#7a5200" }}>
+            <div style={{ fontSize: 14 }}>Your delivery code</div>
+            <div style={{ fontSize: 34, fontWeight: 800, letterSpacing: 6, margin: "4px 0" }}>{code}</div>
+            <div style={{ fontSize: 13 }}>
+              Give this code to the delivery person only when you receive your order. We also emailed it to you, and you can see it on My Orders.
+            </div>
+          </div>
         )}
 
         <div className="order-success-actions">

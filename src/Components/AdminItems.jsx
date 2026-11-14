@@ -24,6 +24,9 @@ export default function AdminItems() {
     api.get("/category").then((res) => setCategories(res.data));
   }, []);
 
+  // Products that are out of stock or running low (5 or fewer)
+  const lowCount = items.filter((item) => Number(item.stock) <= 5).length;
+
   // Update one form field
   const set = (field) => (e) => setForm({ ...form, [field]: e.target.value });
 
@@ -101,6 +104,13 @@ export default function AdminItems() {
       <h3 className="admin-section">Products ({items.length})</h3>
       {error && <p className="admin-error">{error}</p>}
 
+      {/* Stock alert */}
+      {lowCount > 0 && (
+        <p className="admin-error" style={{ background: "#fff8ec", borderColor: "#f1d9a0", color: "#b45f00" }}>
+          ⚠ {lowCount} product{lowCount > 1 ? "s are" : " is"} out of stock or running low (5 or fewer). Check the highlighted rows below.
+        </p>
+      )}
+
       {/* ========== PRODUCT FORM ========== */}
       <form className="admin-form" id="item-form" onSubmit={save}>
         <h3>{editId ? "Edit Product" : "Add Product"}</h3>
@@ -167,19 +177,25 @@ export default function AdminItems() {
           </thead>
           <tbody>
             {items.length === 0 && <tr><td colSpan="6">No products yet</td></tr>}
-            {items.map((item) => (
-              <tr key={item.id}>
-                <td>{item.image && <img src={item.image} alt={item.name} />}</td>
-                <td>{item.name}</td>
-                <td>{item.category}</td>
-                <td>₹{Number(item.price).toLocaleString("en-IN")}</td>
-                <td>{item.stock}</td>
-                <td>
-                  <button onClick={() => edit(item)}>Edit</button>
-                  <button className="danger" onClick={() => remove(item.id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
+            {items.map((item) => {
+              const left = Number(item.stock);
+              const color = left <= 0 ? "#d23939" : left <= 5 ? "#e67e00" : undefined; // red = out, orange = low
+              return (
+                <tr key={item.id} style={color ? { background: left <= 0 ? "#fff3f2" : "#fff8ec" } : undefined}>
+                  <td>{item.image && <img src={item.image} alt={item.name} />}</td>
+                  <td>{item.name}</td>
+                  <td>{item.category}</td>
+                  <td>₹{Number(item.price).toLocaleString("en-IN")}</td>
+                  <td style={color ? { color, fontWeight: 700 } : undefined}>
+                    {item.stock}{color && (left <= 0 ? " - Out of stock" : " - Low")}
+                  </td>
+                  <td>
+                    <button onClick={() => edit(item)}>Edit</button>
+                    <button className="danger" onClick={() => remove(item.id)}>Delete</button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
