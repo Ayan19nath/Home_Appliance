@@ -1,16 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
-  Search, Heart, ShoppingCart, UserCircle, Menu,
-  Package, MapPin, CreditCard, Lock, LogOut, LogIn, UserPlus,
+  Search, Heart, ShoppingCart, UserCircle, Menu, Package, MapPin, CreditCard, Lock, LogOut, LogIn, UserPlus,
+  X, Home, ShoppingBag, LayoutGrid, Info, Phone, HelpCircle, Truck, ShieldCheck, FileText, RotateCcw, LayoutDashboard, Tag,
 } from "lucide-react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
+import api from "../api";
 import { useCart } from "../Context/CartContext";
+import { getUser, clearUser, clearAdmin } from "../data/session";
 import ThemeToggle from "./ThemeToggle";
 
 // Main navigation links: [path, label]
 const links = [["/", "Home"], ["/shop", "Shop"], ["/categories", "Categories"], ["/about", "About"], ["/contact", "Contact"]];
 
-// Dropdown items for a logged-in customer: [path, icon, label]
+// Dropdown items for a logged-in customer (computer menu): [path, icon, label]
 const userItems = [
   ["/orders", Package, "My Orders"],
   ["/wishlist", Heart, "Wishlist"],
@@ -22,46 +24,41 @@ const userItems = [
 // Dropdown items for a visitor who is not logged in
 const guestItems = [["/login", LogIn, "Login"], ["/register", UserPlus, "Register"]];
 
-// Get the logged-in customer (session login first, then "remember me")
-const getUser = () => {
-  for (const store of [sessionStorage, localStorage]) {
-    try {
-      const user = JSON.parse(store.getItem("homehub-user"));
-      if (user?.loggedIn === true) return user;
-    } catch {
-      // ignore invalid saved data
-    }
-  }
-  return null;
-};
+// Left menu on phones: [section title, [path, icon, label, needs login]]
+const drawerPages = [
+  ["Menu", [["/", Home, "Home"], ["/shop", ShoppingBag, "Shop"], ["/categories", LayoutGrid, "Categories"], ["/about", Info, "About Us"], ["/contact", Phone, "Contact Us"], ["/faq", HelpCircle, "FAQ"]]],
+  ["My Account", [["/orders", Package, "My Orders"], ["/wishlist", Heart, "Wishlist"], ["/cart", ShoppingCart, "Cart"], ["/order-tracking", Truck, "Order Tracking"], ["/profile", UserCircle, "Profile", true], ["/addresses", MapPin, "Addresses", true], ["/change-password", Lock, "Change Password", true]]],
+  ["Policies", [["/privacy-policy", ShieldCheck, "Privacy Policy"], ["/terms-conditions", FileText, "Terms & Conditions"], ["/return-policy", RotateCcw, "Return Policy"]]],
+];
 
 function Navbar() {
   const [searchText, setSearchText] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);     // 3-line account menu (computer)
+  const [drawerOpen, setDrawerOpen] = useState(false); // left menu (phone)
+  const [categories, setCategories] = useState([]);
+  const [currentUser, setCurrentUser] = useState(getUser);
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { cartItemCount } = useCart();
-
-  // Re-checks the admin login after every page change
-  useLocation();
 
   // Admin button is shown only after a successful admin login
   const isAdmin = !!localStorage.getItem("adminToken") && localStorage.getItem("adminRole") === "admin";
 
-  // Load the customer and update when login/logout happens (same tab or other tab)
+  // Refresh the login after every page change and when login/logout happens (same tab or other tab)
   useEffect(() => {
     const update = () => setCurrentUser(getUser());
     update();
+    setDrawerOpen(false); // the left menu closes when a page opens
     window.addEventListener("homehub-auth-changed", update);
     window.addEventListener("storage", update);
     return () => {
       window.removeEventListener("homehub-auth-changed", update);
       window.removeEventListener("storage", update);
     };
-  }, []);
+  }, [pathname]);
 
-  // Close the dropdown when clicking outside it
+  // Close the account dropdown when clicking outside it
   useEffect(() => {
     const close = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
@@ -69,6 +66,21 @@ function Navbar() {
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, []);
+
+  // The page behind the left menu does not scroll while it is open
+  useEffect(() => {
+    document.body.style.overflow = drawerOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [drawerOpen]);
+
+  // Load the shop categories the first time the left menu opens
+  useEffect(() => {
+    if (drawerOpen && categories.length === 0) {
+      api.get("/category").then((res) => setCategories(res.data)).catch(() => {});
+    }
+  }, [drawerOpen]);
 
   // Search: go to the shop page with the search text
   const handleSearch = () => {
@@ -80,6 +92,15 @@ function Navbar() {
   const go = (path) => {
     setMenuOpen(false);
     navigate(path);
+  };
+
+  // Log out (customer and admin login are both cleared)
+  const logout = () => {
+    clearAdmin();
+    clearUser();
+    setMenuOpen(false);
+    setDrawerOpen(false);
+    navigate("/");
   };
 
   // Class for the icon buttons (adds "active-action" on the current page)
@@ -95,117 +116,199 @@ function Navbar() {
     ));
 
   return (
-    <header className="navbar">
-      <div className="nav-container">
+    <>
+      <header className="navbar">
+        <div className="nav-container">
 
-        {/* LOGO */}
-        <Link to="/" className="logo">
-          <svg className="homehub-logo" viewBox="0 0 260 70" xmlns="http://www.w3.org/2000/svg">
-            {/* house outline */}
-            <g fill="none" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 30 L38 7 L68 30" />
-              <path d="M16 25 V57 H60 V25" />
-              <path d="M51 18 V7 H60 V25" />
-            </g>
-            {/* window squares */}
-            <g fill="white">
-              <rect x="29" y="31" width="9" height="9" rx="2" />
-              <rect x="41" y="31" width="9" height="9" rx="2" />
-              <rect x="29" y="43" width="9" height="9" rx="2" />
-              <rect x="41" y="43" width="9" height="9" rx="2" />
-            </g>
-            {/* orange curve */}
-            <path d="M5 49 C25 68, 65 69, 78 45" fill="none" stroke="#ff9d00" strokeWidth="7" strokeLinecap="round" />
-            {/* logo text */}
-            <text x="82" y="43" fill="white" fontSize="35" fontWeight="700" fontFamily="Arial, Helvetica, sans-serif">Home</text>
-            <text x="178" y="43" fill="#ff9d00" fontSize="35" fontWeight="700" fontFamily="Arial, Helvetica, sans-serif">Hub</text>
-            <text x="115" y="59" fill="white" fontSize="7" fontWeight="500" fontFamily="Arial, Helvetica, sans-serif" letterSpacing="1">YOUR HOME, OUR APPLIANCES</text>
-          </svg>
-        </Link>
+          {/* LEFT MENU BUTTON (phones) */}
+          <button type="button" className="nav-hamburger" onClick={() => setDrawerOpen(true)} aria-label="Open menu">
+            <Menu size={28} />
+          </button>
 
-        {/* NAVIGATION LINKS */}
-        <nav className="nav-links">
-          {links.map(([to, label]) => (
-            <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => (isActive ? "active" : "")}>
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+          {/* LOGO */}
+          <Link to="/" className="logo">
+            <svg className="homehub-logo" viewBox="0 0 260 70" xmlns="http://www.w3.org/2000/svg">
+              {/* house outline */}
+              <g fill="none" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 30 L38 7 L68 30" />
+                <path d="M16 25 V57 H60 V25" />
+                <path d="M51 18 V7 H60 V25" />
+              </g>
+              {/* window squares */}
+              <g fill="white">
+                <rect x="29" y="31" width="9" height="9" rx="2" />
+                <rect x="41" y="31" width="9" height="9" rx="2" />
+                <rect x="29" y="43" width="9" height="9" rx="2" />
+                <rect x="41" y="43" width="9" height="9" rx="2" />
+              </g>
+              {/* orange curve */}
+              <path d="M5 49 C25 68, 65 69, 78 45" fill="none" stroke="#ff9d00" strokeWidth="7" strokeLinecap="round" />
+              {/* logo text */}
+              <text x="82" y="43" fill="white" fontSize="35" fontWeight="700" fontFamily="Arial, Helvetica, sans-serif">Home</text>
+              <text x="178" y="43" fill="#ff9d00" fontSize="35" fontWeight="700" fontFamily="Arial, Helvetica, sans-serif">Hub</text>
+              <text x="115" y="59" fill="white" fontSize="7" fontWeight="500" fontFamily="Arial, Helvetica, sans-serif" letterSpacing="1">YOUR HOME, OUR APPLIANCES</text>
+            </svg>
+          </Link>
 
-        {/* SEARCH BOX */}
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Search for products..."
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <Search size={21} onClick={handleSearch} style={{ cursor: "pointer" }} />
-        </div>
+          {/* NAVIGATION LINKS */}
+          <nav className="nav-links">
+            {links.map(([to, label]) => (
+              <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => (isActive ? "active" : "")}>
+                {label}
+              </NavLink>
+            ))}
+          </nav>
 
-        {/* ACTION ICONS */}
-        <div className="nav-actions">
+          {/* SEARCH BOX */}
+          <div className="search-box">
+            <input
+              type="text"
+              placeholder="Search for products..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+            <Search size={21} onClick={handleSearch} style={{ cursor: "pointer" }} />
+          </div>
 
-          {/* ADMIN BUTTON (only visible to a logged-in admin) */}
-          {isAdmin && (
-            <Link to="/admin/dashboard" className="nav-admin">Admin</Link>
-          )}
+          {/* ACTION ICONS */}
+          <div className="nav-actions">
 
-          {/* WISHLIST */}
-          <NavLink to="/wishlist" className={actionClass("Wishlist-button")} title="Wishlist">
-            {({ isActive }) => <Heart size={25} fill={isActive ? "currentColor" : "none"} />}
-          </NavLink>
-
-          {/* CART (with item count badge) */}
-          <NavLink to="/cart" className={actionClass("cart-button")} title="Cart">
-            <ShoppingCart size={26} />
-            {cartItemCount > 0 && <span>{cartItemCount}</span>}
-          </NavLink>
-
-          {/* PROFILE */}
-          <NavLink to="/profile" className={actionClass("profile-button")} title="Profile">
-            <UserCircle size={35} />
-          </NavLink>
-
-          {/* COLOUR MODE: light, dark or default */}
-          <ThemeToggle />
-
-          {/* 3-LINE MENU */}
-          <div className="profile-menu-wrapper" ref={menuRef}>
-            <button
-              type="button"
-              className={`navbar-menu-button ${menuOpen ? "menu-open" : ""}`}
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label="Open profile menu"
-              aria-expanded={menuOpen}
-              title="More"
-            >
-              <Menu size={29} />
-            </button>
-
-            {/* DROPDOWN */}
-            {menuOpen && (
-              <div className="profile-dropdown">
-                {currentUser ? (
-                  <>
-                    {/* logged-in menu */}
-                    {menuItems(userItems)}
-                    <button type="button" className="profile-dropdown-item logout-dropdown-item" onClick={() => go("/logout")}>
-                      <LogOut size={20} />
-                      <span>Logout</span>
-                    </button>
-                  </>
-                ) : (
-                  // logged-out menu
-                  menuItems(guestItems)
-                )}
-              </div>
+            {/* ADMIN BUTTON (only visible to a logged-in admin) */}
+            {isAdmin && (
+              <Link to="/admin/dashboard" className="nav-admin">Admin</Link>
             )}
+
+            {/* WISHLIST */}
+            <NavLink to="/wishlist" className={actionClass("Wishlist-button")} title="Wishlist">
+              {({ isActive }) => <Heart size={25} fill={isActive ? "currentColor" : "none"} />}
+            </NavLink>
+
+            {/* CART (with item count badge) */}
+            <NavLink to="/cart" className={actionClass("cart-button")} title="Cart">
+              <ShoppingCart size={26} />
+              {cartItemCount > 0 && <span>{cartItemCount}</span>}
+            </NavLink>
+
+            {/* PROFILE */}
+            <NavLink to="/profile" className={actionClass("profile-button")} title="Profile">
+              <UserCircle size={35} />
+            </NavLink>
+
+            {/* COLOUR MODE: light, dark or default */}
+            <ThemeToggle />
+
+            {/* 3-LINE ACCOUNT MENU (computer) */}
+            <div className="profile-menu-wrapper" ref={menuRef}>
+              <button
+                type="button"
+                className={`navbar-menu-button ${menuOpen ? "menu-open" : ""}`}
+                onClick={() => setMenuOpen((open) => !open)}
+                aria-label="Open profile menu"
+                aria-expanded={menuOpen}
+                title="More"
+              >
+                <Menu size={29} />
+              </button>
+
+              {/* DROPDOWN */}
+              {menuOpen && (
+                <div className="profile-dropdown">
+                  {currentUser ? (
+                    <>
+                      {/* logged-in menu */}
+                      {menuItems(userItems)}
+                      <button type="button" className="profile-dropdown-item logout-dropdown-item" onClick={logout}>
+                        <LogOut size={20} />
+                        <span>Logout</span>
+                      </button>
+                    </>
+                  ) : (
+                    // logged-out menu
+                    menuItems(guestItems)
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* LEFT MENU (phones): outside the header so it covers the whole screen */}
+      {drawerOpen && (
+        <>
+          <div className="drawer-overlay" onClick={() => setDrawerOpen(false)} />
+
+          <aside className="mobile-drawer" aria-label="Menu">
+            <div className="drawer-head">
+              <Link to="/" className="drawer-brand">Home<span>Hub</span></Link>
+              <button type="button" className="drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close menu">
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* who is logged in */}
+            <div className="drawer-user">
+              <UserCircle size={46} />
+              <div>
+                <strong>{currentUser?.name || "Welcome to HomeHub"}</strong>
+                <span>{currentUser?.email || "Login to see your orders"}</span>
+              </div>
+            </div>
+            {!currentUser && (
+              <div className="drawer-auth">
+                <Link to="/login">Login</Link>
+                <Link to="/register">Register</Link>
+              </div>
+            )}
+
+            {isAdmin && (
+              <div className="drawer-section">
+                <NavLink to="/admin/dashboard" className="drawer-link">
+                  <LayoutDashboard size={21} />
+                  <span>Admin Dashboard</span>
+                </NavLink>
+              </div>
+            )}
+
+            {drawerPages.map(([title, items], index) => (
+              <Fragment key={title}>
+                <div className="drawer-section">
+                  <h4>{title}</h4>
+                  {items.filter((item) => !item[3] || currentUser).map(([path, Icon, label]) => (
+                    <NavLink key={path} to={path} end={path === "/"} className={({ isActive }) => `drawer-link${isActive ? " active" : ""}`}>
+                      <Icon size={21} />
+                      <span>{label}</span>
+                      {path === "/cart" && cartItemCount > 0 && <em>{cartItemCount}</em>}
+                    </NavLink>
+                  ))}
+                </div>
+
+                {/* shop categories come right after the main menu */}
+                {index === 0 && categories.length > 0 && (
+                  <div className="drawer-section">
+                    <h4>Shop by Category</h4>
+                    {categories.map((c) => (
+                      <Link key={c._id} to={`/shop?category=${encodeURIComponent(c.cat_name)}`} className="drawer-link">
+                        <Tag size={21} />
+                        <span>{c.cat_name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </Fragment>
+            ))}
+
+            {currentUser && (
+              <button type="button" className="drawer-logout" onClick={logout}>
+                <LogOut size={20} />
+                Logout
+              </button>
+            )}
+          </aside>
+        </>
+      )}
+    </>
   );
 }
 

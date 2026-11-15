@@ -1,0 +1,72 @@
+/* ========== NAVBAR: full width + the mobile menu button ========== */
+.nav-container { width: 100%; }
+.nav-hamburger { display: none; width: 42px; height: 42px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 10px; color: #fff; transition: 0.2s ease; }
+.nav-hamburger:hover { color: #1ca8ff; }
+
+/* ========== MOBILE MENU: left drawer (like the Facebook app) ========== */
+.drawer-overlay { position: fixed; inset: 0; z-index: 9998; background: rgba(0, 24, 45, 0.55); }
+.mobile-drawer { position: fixed; top: 0; bottom: 0; left: 0; z-index: 9999; width: min(86vw, 340px); overflow-y: auto; background: #fff; color: #102b4e; box-shadow: 8px 0 30px rgba(0, 0, 0, 0.25); animation: drawerIn 0.22s ease; }
+@keyframes drawerIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+.drawer-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #e3edf3; }
+.drawer-brand { font-size: 25px; font-weight: 800; color: #071a2e; }
+.drawer-brand span { color: #ff9d00; }
+.drawer-close { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #eef5fa; color: #12395c; }
+
+.drawer-user { display: flex; align-items: center; gap: 12px; margin: 14px 14px 10px; padding: 12px; border-radius: 12px; background: #eaf6ff; color: #087ee8; }
+.drawer-user strong { display: block; color: #12395c; font-size: 15px; }
+.drawer-user span { display: block; color: #58728a; font-size: 12px; word-break: break-all; }
+.drawer-auth { display: flex; gap: 10px; margin: 0 14px 8px; }
+.drawer-auth a { flex: 1; padding: 10px; border: 1px solid #087ee8; border-radius: 9px; background: #087ee8; color: #fff; font-size: 14px; font-weight: 700; text-align: center; }
+.drawer-auth a + a { background: #fff; color: #087ee8; }
+
+.drawer-section { margin-top: 6px; padding: 6px 10px; border-top: 1px solid #edf3f7; }
+.drawer-section h4 { margin: 8px 8px 4px; color: #6b8296; font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase; }
+.drawer-link { display: flex; align-items: center; gap: 14px; padding: 11px 10px; border-radius: 9px; color: #17496e; font-size: 15px; font-weight: 600; }
+.drawer-link svg { flex-shrink: 0; color: #087ee8; }
+.drawer-link span { flex: 1; }
+.drawer-link em { min-width: 22px; padding: 2px 7px; border-radius: 12px; background: #21a9ff; color: #fff; font-size: 12px; font-style: normal; text-align: center; }
+.drawer-link.active, .drawer-link:active { background: #e4f4ff; color: #087ee8; }
+.drawer-logout { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 28px); margin: 14px; padding: 12px; border-radius: 10px; background: #fff0f0; color: #d23939; font-size: 15px; font-weight: 700; }
+
+/* dark mode: keep the dark veil behind the menu */
+html.dark .drawer-overlay { filter: invert(1) hue-rotate(180deg); }
+
+/* ========== PHONES AND SMALL TABLETS: tidy navbar ========== */
+@media (max-width: 900px) {
+  .navbar { height: auto; padding: 8px 12px; }
+  .nav-container { min-height: 0; padding: 0; gap: 10px; flex-wrap: wrap; }
+  .nav-hamburger { display: flex; order: 0; }
+  .logo { order: 1; flex: 1; min-width: 0; height: 44px; }
+  .homehub-logo { width: 130px; height: 44px; }
+  .nav-actions { order: 2; gap: 8px; }
+  .search-box { order: 3; flex: 0 0 100%; width: 100%; height: 40px; margin: 2px 0 0; }
+  .nav-admin, .profile-menu-wrapper, .Wishlist-button { display: none; } /* these are inside the left menu on phones */
+}
+@media (max-width: 380px) {
+  .homehub-logo { width: 112px; }
+  .nav-actions { gap: 4px; }
+}
+
+/* ========== HOME SLIDER ON PHONES ========== */
+@media (max-width: 600px) {
+  .hero { height: 400px; }
+  .hero-overlay { background: linear-gradient(180deg, rgba(5, 22, 39, 0.7) 0%, rgba(5, 22, 39, 0.5) 45%, rgba(5, 22, 39, 0.92) 100%); }
+  .hero-content { justify-content: flex-end; padding: 24px 18px 44px; }
+  .hero h1 { font-size: 25px; }
+  .hero-description { margin-top: 8px; font-size: 13px; }
+  .hero-buttons { gap: 8px; margin-top: 12px; }
+  .shop-btn, .explore-btn { gap: 10px; padding: 9px 15px; font-size: 12px; }
+  .hero-image { background-position: 70% center; }
+  .hero-dots { left: 50%; bottom: 12px; } /* was 25px, which cut off the first dot */
+}
+
+/* ========== FIXES FOR CLASS NAMES USED TWICE ========== */
+/* Categories page cards: undo the fixed height and centering that index.css adds to .category-card */
+.categories-grid .category-card { height: auto; align-items: stretch; justify-content: flex-start; }
+/* Shop product cards: the feature list is a plain list (ProductDetails.css makes .product-features a grid) */
+.shop-product-card .product-features { display: block; }
+
+/* ========== POLICY PAGE BANNERS (the old /src/ path does not work on the live site) ========== */
+.policy-hero { background: linear-gradient(90deg, rgba(0, 39, 72, 0.96), rgba(0, 67, 112, 0.72), rgba(0, 0, 0, 0.15)), url("./assets/images/slider1.jpeg") center / cover no-repeat; }
+.terms-hero, .return-hero { background: linear-gradient(90deg, rgba(0, 39, 72, 0.96), rgba(0, 67, 112, 0.7), rgba(0, 0, 0, 0.12)), url("./assets/images/slider2.jpeg") center / cover no-repeat; }

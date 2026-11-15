@@ -49,6 +49,7 @@ function Login() {
         localStorage.setItem("adminToken", data.token);
         localStorage.setItem("adminRole", data.role);
         localStorage.setItem("adminOwner", data.isOwner ? "true" : "false");
+        localStorage.setItem("adminUser", JSON.stringify(data.user)); // lets the admin shop and see the profile
         navigate("/admin/dashboard");
       } else {
         saveUser({ ...data.user, token: data.token }, rememberMe);
