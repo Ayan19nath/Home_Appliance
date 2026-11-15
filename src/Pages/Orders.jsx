@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Search, Headphones, MapPin, ChevronRight, Eye, Truck, X,
-  CheckCircle2, Clock3, Package, UserCircle, LogIn, Trash2,
+  Search, Headphones, MapPin, ChevronRight, Eye, Truck, X, CheckCircle2,
+  Clock3, Package, UserCircle, LogIn, Trash2, CreditCard,
 } from "lucide-react";
 import api from "../api";
 import { getUser } from "../data/session";
+import { payWithRazorpay } from "../data/razorpay";
 import "./Orders.css";
 
-const FILTERS = ["All Orders", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"];
+const FILTERS = ["All Orders", "Awaiting Payment", "Processing", "Shipped", "Out for Delivery", "Delivered", "Cancelled"];
 const STEPS = ["Shipped", "Out for Delivery", "Delivered"];
-const ICONS = { Delivered: CheckCircle2, Shipped: Truck, "Out for Delivery": Truck, Processing: Clock3, Cancelled: X };
+const ICONS = { Delivered: CheckCircle2, Shipped: Truck, "Out for Delivery": Truck, Processing: Clock3, "Awaiting Payment": Clock3, Cancelled: X };
+const BADGE = { "Out for Delivery": "shipped", "Awaiting Payment": "processing" }; // these use the colour of another status
 
 const money = (n) => Number(n || 0).toLocaleString("en-IN");
 
@@ -26,6 +28,7 @@ const when = (v) => {
 const timelineOf = (o) => {
   const at = (s) => o.history?.find((h) => h.status === s)?.at;
   if (o.status === "Cancelled") return [["Order Placed", o.createdAt, true], ["Cancelled", o.cancelledAt, true]];
+  if (o.status === "Awaiting Payment") return [["Order Created", o.createdAt, true], ["Payment", null, false]];
   return [["Order Placed", o.createdAt, true], ...STEPS.map((s) => [s, at(s), Boolean(at(s))])];
 };
 
@@ -71,6 +74,19 @@ function Orders() {
         (!q || o.orderId.toLowerCase().includes(q) || o.items.some((i) => i.name.toLowerCase().includes(q)))
     );
   }, [orders, filter, search]);
+
+  // Finish the payment of an order that is waiting for it
+  const payNow = async (o) => {
+    try {
+      const { data } = await api.post(`/order/${o.id}/pay`);
+      const result = await payWithRazorpay({ payment: data.payment, orderId: o.orderId, user, phone: o.address?.phone });
+      await api.post(`/order/${o.id}/verify`, result);
+      navigate("/order-success", { state: { orderId: o.orderId, total: o.total } });
+    } catch (err) {
+      if (err.message !== "closed") alert(err.response?.data?.message || err.message || "Payment failed. Please try again.");
+      load();
+    }
+  };
 
   // Remove a cancelled order from my history
   const remove = async (o) => {
@@ -173,7 +189,8 @@ function Orders() {
                 shown.map((o) => {
                   const item = o.items[0] || {};
                   const Icon = ICONS[o.status] || Clock3;
-                  const slug = o.status === "Out for Delivery" ? "shipped" : o.status.toLowerCase(); // same colour as Shipped
+                  const slug = BADGE[o.status] || o.status.toLowerCase();
+                  const online = o.paymentMethod === "Online Payment";
 
                   return (
                     <article className="order-card" key={o.id}>
@@ -194,7 +211,9 @@ function Orders() {
                       <div className="order-information">
                         <p><span>Order ID:</span> #{o.orderId}</p>
                         <p><span>Placed on:</span> {when(o.createdAt)}</p>
-                        <p><span>Payment:</span> {o.paymentMethod}</p>
+                        <p><span>Payment:</span> {o.paymentMethod}{online && ` (${o.paymentStatus === "Paid" ? "Paid" : "Not paid"})`}</p>
+                        {o.status === "Awaiting Payment" && <p><span>Pay before:</span> {when(o.paymentDeadline)}</p>}
+                        {o.status === "Cancelled" && o.paymentStatus === "Paid" && <p><span>Refund:</span> {o.refundStatus}</p>}
                         {o.deliveryOtp && (
                           <div style={{ marginTop: 8, padding: "8px 10px", borderRadius: 7, background: "#fff6df", border: "1px solid #f1d9a0", color: "#7a5200", fontSize: 11 }}>
                             Delivery code: <strong style={{ fontSize: 17, letterSpacing: 3 }}>{o.deliveryOtp}</strong>
@@ -232,14 +251,21 @@ function Orders() {
                           View Details
                         </Link>
 
-                        {o.status === "Processing" && (
+                        {o.status === "Awaiting Payment" && (
+                          <button type="button" className="order-action-button track-order-button" onClick={() => payNow(o)}>
+                            <CreditCard size={16} />
+                            Pay Now
+                          </button>
+                        )}
+
+                        {["Processing", "Awaiting Payment"].includes(o.status) && (
                           <button type="button" className="order-action-button cancel-order-button" onClick={() => navigate(`/cancel-order/${o.id}`)}>
                             <X size={16} />
                             Cancel Order
                           </button>
                         )}
 
-                        {o.status !== "Cancelled" && (
+                        {!["Cancelled", "Awaiting Payment"].includes(o.status) && (
                           <button type="button" className="order-action-button track-order-button" onClick={() => navigate(`/order-tracking/${o.orderId}`)}>
                             <Truck size={16} />
                             Track Order

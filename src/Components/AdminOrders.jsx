@@ -6,6 +6,7 @@ const NEXT = { Processing: "Shipped", Shipped: "Out for Delivery", "Out for Deli
 
 // Status badge colours: [background, text]
 const COLORS = {
+  "Awaiting Payment": ["#f3e8ff", "#7c3aed"],
   Processing: ["#fff6df", "#9a6500"],
   Shipped: ["#e9f6ff", "#086bb7"],
   "Out for Delivery": ["#e0f2fe", "#0369a1"],
@@ -37,22 +38,36 @@ export default function AdminOrders() {
     load();
   }, []);
 
-  // Move an order one step forward (the server emails the customer).
-  // Delivered needs the customer's code; skipOtp is for the owner only.
-  const advance = async (o, skipOtp = false) => {
-    const next = NEXT[o.status];
-    if (!window.confirm(`Mark order #${o.orderId} as "${next}"? The customer will get an email.`)) return;
-    setBusy(o.id);
+  // Run a server call for one order, show any error, then reload the list
+  const run = async (id, call, failText) => {
+    setBusy(id);
     try {
-      await api.put(`/order/${o.id}/status`, { status: next, otp: codes[o.id], skipOtp });
-      setCodes({ ...codes, [o.id]: "" });
+      await call();
       setError("");
     } catch (err) {
-      setError(err.response?.data?.message || "Could not change the status.");
+      setError(err.response?.data?.message || failText);
     }
     await load();
     setBusy("");
   };
+
+  // Move an order one step forward (the server emails the customer).
+  // Delivered needs the customer's code; skipOtp is for the owner only.
+  const advance = (o, skipOtp = false) =>
+    window.confirm(`Mark order #${o.orderId} as "${NEXT[o.status]}"? The customer will get an email.`) &&
+    run(
+      o.id,
+      async () => {
+        await api.put(`/order/${o.id}/status`, { status: NEXT[o.status], otp: codes[o.id], skipOtp });
+        setCodes({ ...codes, [o.id]: "" });
+      },
+      "Could not change the status."
+    );
+
+  // Try the refund of a cancelled paid order again
+  const retryRefund = (o) =>
+    window.confirm(`Refund ₹${money(o.total)} for order #${o.orderId} again?`) &&
+    run(o.id, () => api.post(`/order/${o.id}/refund`), "The refund failed again. Refund it from the Razorpay dashboard.");
 
   const count = (s) => (s === "All" ? orders.length : orders.filter((o) => o.status === s).length);
   const shown = filter === "All" ? orders : orders.filter((o) => o.status === filter);
@@ -80,6 +95,8 @@ export default function AdminOrders() {
             {shown.length === 0 && <tr><td colSpan="6">No orders found</td></tr>}
             {shown.map((o) => {
               const [bg, color] = COLORS[o.status] || COLORS.Processing;
+              const online = o.paymentMethod === "Online Payment";
+              const failed = o.refundStatus === "Refund failed";
               return (
                 <tr key={o.id} style={{ verticalAlign: "top" }}>
                   <td>
@@ -94,16 +111,25 @@ export default function AdminOrders() {
                   </td>
                   <td>
                     {o.items.map((i, n) => <div key={n}>{i.name} × {i.quantity}</div>)}
-                    {o.couponCode && <div style={small}>Coupon: {o.couponCode} (-₹{money(o.couponDiscount)})</div>}
                     {o.notes && <div style={small}>Note: {o.notes}</div>}
                   </td>
                   <td>
                     ₹{money(o.total)}
                     <div style={small}>{o.paymentMethod}</div>
+                    {online && (
+                      <div style={{ ...small, fontWeight: 700, color: o.paymentStatus === "Paid" ? "#178047" : "#9a6500" }}>
+                        {o.paymentStatus === "Paid" ? "Paid" : "Not paid"}
+                      </div>
+                    )}
+                    {o.paymentId && <div style={small}>Payment {o.paymentId}</div>}
+                    {o.couponCode && <div style={small}>Coupon {o.couponCode} (-₹{money(o.couponDiscount)})</div>}
                   </td>
                   <td>
                     <span style={{ background: bg, color, padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" }}>{o.status}</span>
                     {o.status === "Cancelled" && <div style={small}>{o.cancellationReason}</div>}
+                    {o.status === "Cancelled" && o.paymentStatus === "Paid" && (
+                      <div style={{ ...small, fontWeight: 700, color: failed ? "#b33c3c" : "#178047" }}>{o.refundStatus}</div>
+                    )}
                   </td>
                   <td>
                     {o.status === "Out for Delivery" ? (
@@ -128,6 +154,10 @@ export default function AdminOrders() {
                     ) : NEXT[o.status] ? (
                       <button type="button" className="approve" disabled={busy === o.id} onClick={() => advance(o)}>
                         {busy === o.id ? "Saving..." : `Mark ${NEXT[o.status]}`}
+                      </button>
+                    ) : failed ? (
+                      <button type="button" className="danger" disabled={busy === o.id} onClick={() => retryRefund(o)}>
+                        {busy === o.id ? "Refunding..." : "Retry refund"}
                       </button>
                     ) : "-"}
                   </td>
