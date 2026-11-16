@@ -13,10 +13,11 @@ const STEPS = [
   ["Out for Delivery", Truck, "Out for Delivery"],
   ["Delivered", Home, "Delivered"],
 ];
-const LEVEL = { Processing: 1, Shipped: 2, "Out for Delivery": 3, Delivered: 4 };
+const LEVEL = { "Awaiting Payment": 0, Processing: 1, Shipped: 2, "Out for Delivery": 3, Delivered: 4 };
 
 // [title, text] for the status message
 const MESSAGES = {
+  "Awaiting Payment": ["Waiting for your payment", "Open My Orders and press Pay Now to confirm this order."],
   Processing: ["Your order is being processed", "Your order is being prepared for shipping."],
   Shipped: ["Your order has been shipped", "Your package has left our warehouse."],
   "Out for Delivery": ["Your order is on the way", "Your package is currently out for delivery."],
@@ -62,10 +63,10 @@ function OrderTracking() {
     }
   }, [orderId]);
 
-  // Journey steps with dates (a cancelled order shows no progress)
+  // Journey steps with dates (a cancelled or unpaid order shows no progress)
   const steps = useMemo(() => {
     const at = (s) => order?.history?.find((h) => h.status === s)?.at;
-    const level = order && order.status !== "Cancelled" ? LEVEL[order.status] || 1 : 0;
+    const level = order && order.status !== "Cancelled" ? LEVEL[order.status] ?? 1 : 0;
     return STEPS.map(([title, Icon, status], i) => ({
       title,
       Icon,
@@ -78,7 +79,10 @@ function OrderTracking() {
   const done = steps.filter((s) => s.completed).length;
   const item = order?.items?.[0] || {};
   const message = order ? MESSAGES[order.status] || MESSAGES.Processing : null;
-  const statusClass = order ? (order.status === "Shipped" ? "out-for-delivery" : order.status.toLowerCase().replace(/\s+/g, "-")) : "";
+  const refunded = order?.status === "Cancelled" && order?.paymentStatus === "Paid"; // a paid order that was cancelled
+  const statusClass = order
+    ? { Shipped: "out-for-delivery", "Awaiting Payment": "processing" }[order.status] || order.status.toLowerCase().replace(/\s+/g, "-")
+    : "";
 
   return (
     <main className="new-order-tracking-page">
@@ -200,7 +204,13 @@ function OrderTracking() {
               <div className="tracked-order-details">
                 <div><span>Placed On</span><strong>{when(order.createdAt) || "Not available"}</strong></div>
                 <div><span>Order Total</span><strong>₹{Number(order.total || 0).toLocaleString("en-IN")}</strong></div>
-                <div><span>Payment</span><strong>{order.paymentMethod}</strong></div>
+                <div>
+                  <span>Payment</span>
+                  <strong>
+                    {order.paymentMethod}
+                    {order.paymentMethod === "Online Payment" && (order.paymentStatus === "Paid" ? " (Paid)" : " (Not paid)")}
+                  </strong>
+                </div>
               </div>
 
               <div className="tracked-status-message">
@@ -208,8 +218,17 @@ function OrderTracking() {
                 <div>
                   <strong>{message[0]}</strong>
                   <p>{message[1]}</p>
+                  {refunded && <p>Refund status: {order.refundStatus}</p>}
                 </div>
               </div>
+
+              {/* Delivery code: shown to the customer while the order is active */}
+              {order.deliveryOtp && (
+                <div style={{ margin: "0 24px 20px", padding: "12px 16px", borderRadius: 10, background: "#fff6df", border: "1px solid #f1d9a0", color: "#7a5200", fontSize: 13 }}>
+                  Your delivery code: <strong style={{ fontSize: 22, letterSpacing: 4 }}>{order.deliveryOtp}</strong>
+                  <div>Give this code to the delivery person only when you receive your order.</div>
+                </div>
+              )}
 
               <div className="tracked-order-actions">
                 <Link to={`/product/${item.id}`} className="my-product-button">

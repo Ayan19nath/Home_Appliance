@@ -77,6 +77,14 @@ const CancelSuccess = () => {
           </div>
         )}
 
+        {/* REFUND (only for orders that were paid online) */}
+        {order?.paymentStatus === "Paid" && (
+          <div className="cancelled-reason-display">
+            <span>Refund</span>
+            <strong>₹{Number(order.total || 0).toLocaleString("en-IN")} goes back to your original payment method in 5 to 7 working days</strong>
+          </div>
+        )}
+
         {/* BUTTONS */}
         <div className="cancel-success-actions">
           <Link to="/" className="back-home-success-button">

@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
 import { useCart } from "../Context/CartContext";
 import { getUser } from "../data/session";
+import { payWithRazorpay } from "../data/razorpay";
 import "./Checkout.css";
 
 /* ===== DATA ===== */
@@ -17,11 +18,10 @@ const INDIAN_STATES = [
   "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Lakshadweep", "Delhi", "Puducherry", "Ladakh", "Jammu and Kashmir",
 ].sort();
 
-// [id, title, description, name saved in the order (the server accepts only these three)]
+// [id, title, description, name saved in the order (the server accepts only these two)]
 const PAYMENTS = [
+  ["online", "Pay Online", "UPI, Cards, Netbanking and Wallets (secured by Razorpay).", "Online Payment"],
   ["cod", "Cash on Delivery (COD)", "Pay when you receive your order.", "Cash on Delivery"],
-  ["upi", "UPI", "Pay securely using UPI.", "UPI"],
-  ["card", "Credit / Debit Card", "Pay securely using your card.", "Credit / Debit Card"],
 ];
 
 const STEPS = [
@@ -46,7 +46,7 @@ const Checkout = () => {
   const { cart, cartSubtotal, cartDiscount, cartTotal, clearCart, coupon, couponDiscount } = useCart();
 
   const [step, setStep] = useState(1);
-  const [payment, setPayment] = useState("cod");
+  const [payment, setPayment] = useState("online");
   const [notes, setNotes] = useState("");
   const [addresses, setAddresses] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -121,10 +121,11 @@ const Checkout = () => {
   /* ===== STEP BUTTONS ===== */
   const toPayment = () => (selected ? setStep(2) : alert("Please select or add a shipping address."));
 
-  /* ===== PLACE ORDER (saved on the server: prices, discount, stock and emails are handled there) ===== */
+  /* ===== PLACE ORDER (the server saves it: prices, discount, stock and emails are handled there) ===== */
   const placeOrder = async () => {
     if (placing) return;
-    if (!getUser()) {
+    const user = getUser();
+    if (!user) {
       alert("Please login before placing your order.");
       return navigate("/login");
     }
@@ -138,8 +139,9 @@ const Checkout = () => {
     }
 
     setPlacing(true);
+    let data;
     try {
-      const { data } = await api.post("/order", {
+      ({ data } = await api.post("/order", {
         items: cart.map((i) => ({ id: i.id, quantity: Number(i.quantity || 1) })),
         couponCode: coupon?.code,
         address: {
@@ -153,24 +155,60 @@ const Checkout = () => {
         },
         paymentMethod: pay[3],
         notes,
-      });
-      clearCart();
-      navigate("/order-success", { state: { orderId: data.orderId, total: data.total } });
+      }));
     } catch (err) {
       alert(err.response?.data?.message || "Something went wrong while placing your order.");
-      setPlacing(false);
+      return setPlacing(false);
+    }
+
+    clearCart(); // the items now belong to the saved order
+    const done = () => navigate("/order-success", { state: { orderId: data.orderId, total: data.total } });
+
+    // Cash on delivery: finished
+    if (!data.payment) return done();
+
+    // Online payment: the order waits 30 minutes for the money, so open the payment window
+    let result;
+    try {
+      result = await payWithRazorpay({ payment: data.payment, orderId: data.orderId, user, phone: selected.phone });
+    } catch (err) {
+      alert(
+        err.message === "closed"
+          ? "Payment was not completed. Your order is saved for 30 minutes. Open My Orders and press Pay Now to finish it."
+          : err.message
+      );
+      return navigate("/orders");
+    }
+
+    // Money paid: the server checks the payment signature, then confirms the order
+    try {
+      await api.post(`/order/${data.id}/verify`, result);
+      done();
+    } catch {
+      alert("We could not confirm your payment yet. If money was deducted, your order will be confirmed automatically. Please check My Orders in a minute.");
+      navigate("/orders");
     }
   };
 
-  /* ===== EMPTY CART ===== */
+  /* ===== EMPTY CART (or the payment window is open) ===== */
   if (!cart?.length) {
     return (
       <main className="checkout-page">
         <div className="checkout-empty">
-          <ShoppingBag size={60} />
-          <h2>Your Cart is Empty</h2>
-          <p>Add some products before proceeding to checkout.</p>
-          <Link to="/shop" className="checkout-empty-btn">Continue Shopping</Link>
+          {placing ? (
+            <>
+              <Lock size={60} />
+              <h2>Processing your payment...</h2>
+              <p>Please do not close or refresh this page.</p>
+            </>
+          ) : (
+            <>
+              <ShoppingBag size={60} />
+              <h2>Your Cart is Empty</h2>
+              <p>Add some products before proceeding to checkout.</p>
+              <Link to="/shop" className="checkout-empty-btn">Continue Shopping</Link>
+            </>
+          )}
         </div>
       </main>
     );
@@ -180,7 +218,7 @@ const Checkout = () => {
   const placeBtn = (
     <button type="button" className="place-order-btn" onClick={placeOrder} disabled={placing}>
       <Lock size={17} />
-      <span>{placing ? "Placing order..." : "Place Order"}</span>
+      <span>{placing ? "Please wait..." : payment === "online" ? "Pay & Place Order" : "Place Order"}</span>
       <ChevronRight size={19} />
     </button>
   );
@@ -413,7 +451,7 @@ const Checkout = () => {
                     <CreditCard size={22} />
                     <div>
                       <strong>{pay[1]}</strong>
-                      <span>Payment method selected</span>
+                      <span>{payment === "online" ? "You will pay securely in the next step" : "Payment method selected"}</span>
                     </div>
                   </div>
                 </div>

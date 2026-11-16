@@ -5,6 +5,7 @@ import api from "../api";
 import "./CancelOrder.css";
 
 const REASONS = ["Changed my mind", "Product is not needed", "Found a better price", "Wrong product ordered", "Delivery is delayed", "Other reason"];
+const CANCELLABLE = ["Processing", "Awaiting Payment"]; // the server allows cancelling only in these statuses
 
 // Mini timeline: [label, statuses that make it active]
 const STEPS = [
@@ -56,9 +57,11 @@ const CancelOrder = () => {
   }
 
   const item = order.items[0] || {};
-  const canCancel = order.status === "Processing"; // the server also allows this only while Processing
+  const canCancel = CANCELLABLE.includes(order.status);
+  const paid = order.paymentStatus === "Paid";
+  const unpaidOnline = order.paymentMethod === "Online Payment" && !paid;
 
-  /* ===== CONFIRM CANCEL (the server cancels, returns the stock and emails the customer) ===== */
+  /* ===== CONFIRM CANCEL (the server cancels, returns the stock, refunds a paid order and emails the customer) ===== */
   const confirmCancel = async () => {
     const finalReason = reason === "Other reason" ? other.trim() : reason;
     if (!finalReason) return setError("Please specify your cancellation reason.");
@@ -147,6 +150,18 @@ const CancelOrder = () => {
               <p>{canCancel ? "Please tell us why you want to cancel this order." : `This order is "${order.status}" and can no longer be cancelled.`}</p>
             </div>
           </div>
+
+          {/* what happens to the money */}
+          {canCancel && paid && (
+            <p style={{ margin: "0 0 14px", color: "#168447", fontSize: 13, fontWeight: 600 }}>
+              Your payment will be refunded to the original payment method in 5 to 7 working days.
+            </p>
+          )}
+          {canCancel && unpaidOnline && (
+            <p style={{ margin: "0 0 14px", color: "#168447", fontSize: 13, fontWeight: 600 }}>
+              You have not paid for this order yet, so nothing will be charged.
+            </p>
+          )}
 
           {canCancel && (
             <div className="reason-options">

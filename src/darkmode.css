@@ -18,3 +18,6 @@ html.dark :is(.navbar, .footer, .hero, .about-hero, .contact-hero, .policy-hero,
 
 /* Login pages: a plain dark background instead of the photo */
 html.dark :is(.login-background, .login-success-background) { background-image: none; background-color: #fff; }
+
+/* Razorpay payment window: keep its real colours */
+html.dark .razorpay-container { filter: invert(1) hue-rotate(180deg); }
