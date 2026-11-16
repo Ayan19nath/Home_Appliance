@@ -8,8 +8,9 @@ import { initTheme } from './data/theme'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.bundle.js'
 
-// Our own styles (darkmode.css stays last so it wins)
+// Our own styles (mobile.css and darkmode.css stay last so they win)
 import './index.css'
+import './mobile.css'
 import './darkmode.css'
 
 // Light, dark or default colour mode (set before the page is shown)

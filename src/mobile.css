@@ -1,72 +1,126 @@
-/* ========== NAVBAR: full width + the mobile menu button ========== */
-.nav-container { width: 100%; }
-.nav-hamburger { display: none; width: 42px; height: 42px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 10px; color: #fff; transition: 0.2s ease; }
-.nav-hamburger:hover { color: #1ca8ff; }
+/* =========================================================
+   MOBILE.CSS
+   Part 1: small fixes that work on every screen
+   Part 2: the left menu (it only opens from the phone button)
+   Part 3: phones and small tablets only (900px and narrower)
+   "html" in front of each selector makes these rules win over index.css.
+========================================================= */
 
-/* ========== MOBILE MENU: left drawer (like the Facebook app) ========== */
-.drawer-overlay { position: fixed; inset: 0; z-index: 9998; background: rgba(0, 24, 45, 0.55); }
-.mobile-drawer { position: fixed; top: 0; bottom: 0; left: 0; z-index: 9999; width: min(86vw, 340px); overflow-y: auto; background: #fff; color: #102b4e; box-shadow: 8px 0 30px rgba(0, 0, 0, 0.25); animation: drawerIn 0.22s ease; }
+/* ---------- PART 1: EVERY SCREEN ---------- */
+
+/* The left menu button is only for phones */
+html .nav-hamburger { display: none; width: 42px; height: 42px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 10px; color: #fff; }
+
+/* Discount badge, hearts and gallery dots stay above the product pictures (in dark mode the pictures covered them) */
+html :is(.discount, .wishlist-btn, .shop-wishlist, .gallery-dots) { z-index: 3; }
+
+/* Class names used in two CSS files */
+html .categories-grid .category-card { height: auto; align-items: stretch; justify-content: flex-start; }
+html .shop-product-card .product-features { display: block; }
+
+/* Policy page banners (the old /src/ path does not work on the live site) */
+html .policy-hero { background: linear-gradient(90deg, rgba(0, 39, 72, 0.96), rgba(0, 67, 112, 0.72), rgba(0, 0, 0, 0.15)), url("./assets/images/slider1.jpeg") center / cover no-repeat; }
+html :is(.terms-hero, .return-hero) { background: linear-gradient(90deg, rgba(0, 39, 72, 0.96), rgba(0, 67, 112, 0.7), rgba(0, 0, 0, 0.12)), url("./assets/images/slider2.jpeg") center / cover no-repeat; }
+
+/* ---------- PART 2: LEFT MENU (opened with the ☰ button) ---------- */
+html .drawer-overlay { position: fixed; inset: 0; z-index: 9998; background: rgba(0, 24, 45, 0.6); }
+html .mobile-drawer { position: fixed; top: 0; bottom: 0; left: 0; z-index: 9999; width: min(86vw, 340px); overflow-y: auto; background: #f4f9ff; color: #102b4e; box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3); animation: drawerIn 0.22s ease; }
 @keyframes drawerIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 
-.drawer-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #e3edf3; }
-.drawer-brand { font-size: 25px; font-weight: 800; color: #071a2e; }
-.drawer-brand span { color: #ff9d00; }
-.drawer-close { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #eef5fa; color: #12395c; }
+/* top bar of the menu */
+html .drawer-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: linear-gradient(135deg, #071a2e, #0b4a8f); }
+html .drawer-brand { font-size: 25px; font-weight: 800; color: #fff; }
+html .drawer-brand span { color: #ff9d00; }
+html .drawer-close { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255, 255, 255, 0.18); color: #fff; }
 
-.drawer-user { display: flex; align-items: center; gap: 12px; margin: 14px 14px 10px; padding: 12px; border-radius: 12px; background: #eaf6ff; color: #087ee8; }
-.drawer-user strong { display: block; color: #12395c; font-size: 15px; }
-.drawer-user span { display: block; color: #58728a; font-size: 12px; word-break: break-all; }
-.drawer-auth { display: flex; gap: 10px; margin: 0 14px 8px; }
-.drawer-auth a { flex: 1; padding: 10px; border: 1px solid #087ee8; border-radius: 9px; background: #087ee8; color: #fff; font-size: 14px; font-weight: 700; text-align: center; }
-.drawer-auth a + a { background: #fff; color: #087ee8; }
+/* who is logged in */
+html .drawer-user { display: flex; align-items: center; gap: 12px; margin: 14px 12px 10px; padding: 12px; border-radius: 14px; background: linear-gradient(135deg, #e6f3ff, #fff1de); color: #087ee8; }
+html .drawer-user strong { display: block; color: #12395c; font-size: 15px; }
+html .drawer-user span { display: block; color: #58728a; font-size: 12px; word-break: break-all; }
+html .drawer-auth { display: flex; gap: 10px; margin: 0 12px 8px; }
+html .drawer-auth a { flex: 1; padding: 10px; border: 1px solid #087ee8; border-radius: 10px; background: linear-gradient(135deg, #0a6fd1, #17a2f0); color: #fff; font-size: 14px; font-weight: 700; text-align: center; }
+html .drawer-auth a + a { background: #fff; color: #087ee8; }
 
-.drawer-section { margin-top: 6px; padding: 6px 10px; border-top: 1px solid #edf3f7; }
-.drawer-section h4 { margin: 8px 8px 4px; color: #6b8296; font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase; }
-.drawer-link { display: flex; align-items: center; gap: 14px; padding: 11px 10px; border-radius: 9px; color: #17496e; font-size: 15px; font-weight: 600; }
-.drawer-link svg { flex-shrink: 0; color: #087ee8; }
-.drawer-link span { flex: 1; }
-.drawer-link em { min-width: 22px; padding: 2px 7px; border-radius: 12px; background: #21a9ff; color: #fff; font-size: 12px; font-style: normal; text-align: center; }
-.drawer-link.active, .drawer-link:active { background: #e4f4ff; color: #087ee8; }
-.drawer-logout { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 28px); margin: 14px; padding: 12px; border-radius: 10px; background: #fff0f0; color: #d23939; font-size: 15px; font-weight: 700; }
+/* sections and links */
+html .drawer-section { margin-top: 6px; padding: 4px 12px; }
+html .drawer-section h4 { margin: 10px 4px 6px; color: #f08a00; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+html .drawer-link { display: flex; align-items: center; gap: 12px; margin: 5px 0; padding: 8px 10px; border: 1px solid #e1edf6; border-radius: 12px; background: #fff; color: #17496e; font-size: 15px; font-weight: 600; }
+html .drawer-link svg { flex-shrink: 0; box-sizing: border-box; width: 34px; height: 34px; padding: 7px; border-radius: 10px; background: #e7f4ff; color: #087ee8; }
+html .drawer-link span { flex: 1; }
+html .drawer-link em { min-width: 22px; padding: 2px 7px; border-radius: 12px; background: #21a9ff; color: #fff; font-size: 12px; font-style: normal; text-align: center; }
+html .drawer-link::after { content: "›"; color: #9bb3c6; font-size: 22px; line-height: 1; } /* arrow at the right */
+html .drawer-link.active { border-color: #087ee8; background: #eaf5ff; color: #087ee8; }
 
-/* dark mode: keep the dark veil behind the menu */
-html.dark .drawer-overlay { filter: invert(1) hue-rotate(180deg); }
+/* each link icon gets its own colour */
+html .drawer-section .drawer-link:nth-of-type(4n + 2) svg { background: #fff1e0; color: #f08a00; }
+html .drawer-section .drawer-link:nth-of-type(4n + 3) svg { background: #e8f8ef; color: #16a05a; }
+html .drawer-section .drawer-link:nth-of-type(4n) svg { background: #f3e8ff; color: #7c3aed; }
 
-/* ========== PHONES AND SMALL TABLETS: tidy navbar ========== */
+html .drawer-logout { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 24px); margin: 14px 12px 24px; padding: 12px; border-radius: 12px; background: #fff0f0; color: #d23939; font-size: 15px; font-weight: 700; }
+
+/* dark mode: the top bar and the veil keep their dark colours */
+html.dark :is(.drawer-head, .drawer-overlay) { filter: invert(1) hue-rotate(180deg); }
+
+/* ---------- PART 3: PHONES AND SMALL TABLETS ONLY ---------- */
 @media (max-width: 900px) {
-  .navbar { height: auto; padding: 8px 12px; }
-  .nav-container { min-height: 0; padding: 0; gap: 10px; flex-wrap: wrap; }
-  .nav-hamburger { display: flex; order: 0; }
-  .logo { order: 1; flex: 1; min-width: 0; height: 44px; }
-  .homehub-logo { width: 130px; height: 44px; }
-  .nav-actions { order: 2; gap: 8px; }
-  .search-box { order: 3; flex: 0 0 100%; width: 100%; height: 40px; margin: 2px 0 0; }
-  .nav-admin, .profile-menu-wrapper, .Wishlist-button { display: none; } /* these are inside the left menu on phones */
+
+  /* Navbar: ☰ on the left, logo in the middle, icons on the right, search below */
+  html .navbar { height: auto; padding: 8px 12px 10px; background: linear-gradient(135deg, #071a2e 0%, #0a2f57 100%); }
+  html .nav-container { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px 0; width: 100%; max-width: none; min-height: 0; margin: 0; padding: 0; }
+  html .nav-hamburger { display: flex; grid-column: 1; grid-row: 1; justify-self: start; }
+  html .logo { grid-column: 2; grid-row: 1; justify-content: center; min-width: 0; height: 44px; margin: 0; }
+  html .homehub-logo { width: 124px; height: 44px; }
+  html .nav-actions { grid-column: 3; grid-row: 1; justify-self: end; gap: 6px; }
+  html .search-box { grid-column: 1 / -1; grid-row: 2; width: 100%; height: 40px; margin: 0; }
+
+  /* these are inside the left menu on phones */
+  html :is(.nav-links, .nav-admin, .profile-menu-wrapper, .Wishlist-button) { display: none; }
+
+  /* smaller icons so they fit on the right */
+  html .cart-button svg { width: 24px; height: 24px; }
+  html .profile-button svg { width: 28px; height: 28px; }
+  html .theme-toggle { width: 32px; height: 32px; }
+  html .theme-toggle svg { width: 21px; height: 21px; }
+
+  /* A little more colour */
+  html body { background: #f3f9ff; }
+  html .section-heading h2 { padding-left: 10px; border-left: 5px solid #ff9d00; }
+  html .service-bar { background: linear-gradient(135deg, #e6f3ff, #fff2dd); }
+  html .service-item:nth-child(4n + 1) .service-icon { color: #087ee8; }
+  html .service-item:nth-child(4n + 2) .service-icon { color: #f08a00; }
+  html .service-item:nth-child(4n + 3) .service-icon { color: #16a05a; }
+  html .service-item:nth-child(4n) .service-icon { color: #7c3aed; }
+  html :is(.product-card, .shop-product-card) { border: 1px solid #cfe6f7; border-top: 4px solid #087ee8; background: linear-gradient(180deg, #fff, #f3f9ff); box-shadow: 0 4px 14px rgba(8, 126, 232, 0.1); }
+  html :is(.add-cart, .shop-add-cart) { background: linear-gradient(135deg, #0a6fd1, #17a2f0); }
+  html .discount { background: linear-gradient(135deg, #ff9d00, #ff6a00); color: #fff; }
+  html :is(.shop-btn, .explore-btn) { border-color: transparent; background: linear-gradient(135deg, #0a8bf0, #17b6ff); }
+  html .footer { background: linear-gradient(160deg, #071a2e, #0a3366); }
 }
+
 @media (max-width: 380px) {
-  .homehub-logo { width: 112px; }
-  .nav-actions { gap: 4px; }
+  html .homehub-logo { width: 112px; }
+  html .nav-actions { gap: 2px; }
 }
 
-/* ========== HOME SLIDER ON PHONES ========== */
 @media (max-width: 600px) {
-  .hero { height: 400px; }
-  .hero-overlay { background: linear-gradient(180deg, rgba(5, 22, 39, 0.7) 0%, rgba(5, 22, 39, 0.5) 45%, rgba(5, 22, 39, 0.92) 100%); }
-  .hero-content { justify-content: flex-end; padding: 24px 18px 44px; }
-  .hero h1 { font-size: 25px; }
-  .hero-description { margin-top: 8px; font-size: 13px; }
-  .hero-buttons { gap: 8px; margin-top: 12px; }
-  .shop-btn, .explore-btn { gap: 10px; padding: 9px 15px; font-size: 12px; }
-  .hero-image { background-position: 70% center; }
-  .hero-dots { left: 50%; bottom: 12px; } /* was 25px, which cut off the first dot */
+
+  /* Home slider */
+  html .hero { height: 400px; }
+  html .hero-overlay { background: linear-gradient(180deg, rgba(5, 22, 39, 0.7) 0%, rgba(5, 22, 39, 0.5) 45%, rgba(5, 22, 39, 0.92) 100%); }
+  html .hero-content { justify-content: flex-end; padding: 24px 18px 44px; }
+  html .hero h1 { font-size: 25px; }
+  html .hero-description { margin-top: 8px; font-size: 13px; }
+  html .hero-buttons { gap: 8px; margin-top: 12px; }
+  html :is(.shop-btn, .explore-btn) { gap: 10px; padding: 9px 15px; font-size: 12px; }
+  html .hero-image { background-position: 70% center; }
+  html .hero-dots { left: 50%; bottom: 12px; } /* was 25px, which cut off the first dot */
+
+  /* Categories page: big picture, small text */
+  html .categories-grid { grid-template-columns: 1fr; gap: 14px; }
+  html .categories-grid .category-card, html .categories-grid .category-deals-card { min-height: 0; border-radius: 14px; box-shadow: 0 4px 14px rgba(0, 95, 145, 0.12); }
+  html .categories-grid :is(.category-card-image, .category-deals-image) { height: 210px; }
+  html .categories-grid .category-card-content { padding: 10px 14px 12px; }
+  html .categories-grid .category-card-title { margin-bottom: 3px; font-size: 15px; }
+  html .categories-grid .category-card-content p { flex: none; display: -webkit-box; overflow: hidden; font-size: 12px; line-height: 1.4; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  html .categories-grid .category-shop-link { margin-top: 8px; font-size: 12px; }
 }
-
-/* ========== FIXES FOR CLASS NAMES USED TWICE ========== */
-/* Categories page cards: undo the fixed height and centering that index.css adds to .category-card */
-.categories-grid .category-card { height: auto; align-items: stretch; justify-content: flex-start; }
-/* Shop product cards: the feature list is a plain list (ProductDetails.css makes .product-features a grid) */
-.shop-product-card .product-features { display: block; }
-
-/* ========== POLICY PAGE BANNERS (the old /src/ path does not work on the live site) ========== */
-.policy-hero { background: linear-gradient(90deg, rgba(0, 39, 72, 0.96), rgba(0, 67, 112, 0.72), rgba(0, 0, 0, 0.15)), url("./assets/images/slider1.jpeg") center / cover no-repeat; }
-.terms-hero, .return-hero { background: linear-gradient(90deg, rgba(0, 39, 72, 0.96), rgba(0, 67, 112, 0.7), rgba(0, 0, 0, 0.12)), url("./assets/images/slider2.jpeg") center / cover no-repeat; }
