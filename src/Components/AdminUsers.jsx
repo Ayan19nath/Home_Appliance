@@ -25,8 +25,10 @@ export default function AdminUsers({ isOwner, canManage, myId }) {
     load();
   };
 
-  // Delete a user (the server checks the rules again)
-  const remove = (u) => window.confirm(`Delete ${u.Email}?`) && run(() => api.delete(`/user/${u._id}`));
+  // Delete a user (the server checks the rules again; a removed admin is logged out at once)
+  const remove = (u) =>
+    window.confirm(u.role === "admin" ? `Remove the admin ${u.Email}? They lose access at once.` : `Delete ${u.Email}?`) &&
+    run(() => api.delete(`/user/${u._id}`));
 
   // Give or take back the power to approve and remove admins (owner only)
   const togglePower = (u) => {
@@ -37,9 +39,8 @@ export default function AdminUsers({ isOwner, canManage, myId }) {
     return window.confirm(text) && run(() => api.put(`/user/${u._id}/manage-admins`, { allow: give }));
   };
 
-  // Who can be deleted: customers by every admin; admins by the owner, or by a manager (not another manager, not himself)
-  const canDelete = (u) =>
-    !u.isOwner && u._id !== myId && (u.role !== "admin" || isOwner || (canManage && !u.canManageAdmins));
+  // Who can be deleted: customers by every admin; admins by the owner or an admin manager. Never the owner, never yourself.
+  const canDelete = (u) => !u.isOwner && u._id !== myId && (u.role !== "admin" || canManage);
 
   // Search by name or email
   const q = search.trim().toLowerCase();
