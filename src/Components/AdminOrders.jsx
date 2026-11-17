@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../api";
 
 // Next status for each current status (the server allows only this one step forward)
@@ -22,9 +22,12 @@ const small = { color: "#667d91", fontSize: 12 };
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("All");
-  const [codes, setCodes] = useState({}); // delivery code typed for each order
+  const [codes, setCodes] = useState({});   // delivery code typed for each order
+  const [sharing, setSharing] = useState(""); // id of the order whose live location is being shared
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
+  const watchId = useRef(null);
+  const lastSent = useRef(0);
 
   const isOwner = localStorage.getItem("adminOwner") === "true";
 
@@ -37,6 +40,36 @@ export default function AdminOrders() {
   useEffect(() => {
     load();
   }, []);
+
+  /* ===== LIVE LOCATION (the phone of the delivery person sends its GPS position) ===== */
+  const stopSharing = () => {
+    if (watchId.current !== null) navigator.geolocation.clearWatch(watchId.current);
+    watchId.current = null;
+    setSharing("");
+  };
+
+  const startSharing = (o) => {
+    if (!navigator.geolocation) return setError("This phone or browser cannot share a location.");
+    stopSharing();
+    setSharing(o.id);
+    watchId.current = navigator.geolocation.watchPosition(
+      ({ coords }) => {
+        if (Date.now() - lastSent.current < 8000) return; // send at most every 8 seconds
+        lastSent.current = Date.now();
+        api.put(`/tracking/${o.id}`, { lat: coords.latitude, lng: coords.longitude }).catch((err) => {
+          setError(err.response?.data?.message || "Could not send the location.");
+          stopSharing();
+        });
+      },
+      () => {
+        setError("Location permission was denied or the GPS is not available.");
+        stopSharing();
+      },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 }
+    );
+  };
+
+  useEffect(() => stopSharing, []); // stop sharing when the dashboard is closed
 
   // Run a server call for one order, show any error, then reload the list
   const run = async (id, call, failText) => {
@@ -59,6 +92,7 @@ export default function AdminOrders() {
       o.id,
       async () => {
         await api.put(`/order/${o.id}/status`, { status: NEXT[o.status], otp: codes[o.id], skipOtp });
+        if (sharing === o.id) stopSharing(); // delivered: the sharing ends
         setCodes({ ...codes, [o.id]: "" });
       },
       "Could not change the status."
@@ -97,6 +131,7 @@ export default function AdminOrders() {
               const [bg, color] = COLORS[o.status] || COLORS.Processing;
               const online = o.paymentMethod === "Online Payment";
               const failed = o.refundStatus === "Refund failed";
+              const live = sharing === o.id;
               return (
                 <tr key={o.id} style={{ verticalAlign: "top" }}>
                   <td>
@@ -133,8 +168,12 @@ export default function AdminOrders() {
                   </td>
                   <td>
                     {o.status === "Out for Delivery" ? (
-                      // delivery: the customer tells the delivery person the 6-digit code
-                      <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 170 }}>
+                      // delivery: share the live location, then enter the customer's 6-digit code
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 180 }}>
+                        <button type="button" className={live ? "danger" : "edit"} onClick={() => (live ? stopSharing() : startSharing(o))}>
+                          {live ? "Stop sharing location" : "Share live location"}
+                        </button>
+                        {live && <small style={{ color: "#178047", fontWeight: 700 }}>● Live: keep this page open</small>}
                         <input
                           placeholder="Customer's 6-digit code"
                           maxLength={6}

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Search, Package, Truck, CheckCircle2, ChevronRight, ShoppingCart, Home } from "lucide-react";
 import api from "../api";
 import { getUser } from "../data/session";
+import LiveTracking from "../Components/LiveTracking";
 import "./OrderTracking.css";
 import OrderTrackingImage from "../assets/images/order-tracking.jpeg";
 
@@ -221,6 +222,9 @@ function OrderTracking() {
                   {refunded && <p>Refund status: {order.refundStatus}</p>}
                 </div>
               </div>
+
+              {/* Live map: only while the order is out for delivery */}
+              {order.status === "Out for Delivery" && <LiveTracking order={order} />}
 
               {/* Delivery code: shown to the customer while the order is active */}
               {order.deliveryOtp && (

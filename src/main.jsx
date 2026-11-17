@@ -8,8 +8,9 @@ import { initTheme } from './data/theme'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.bundle.js'
 
-// Our own styles (mobile.css and darkmode.css stay last so they win)
+// Our own styles (the order matters: later files win, darkmode.css stays last)
 import './index.css'
+import './colors.css'
 import './mobile.css'
 import './darkmode.css'
 

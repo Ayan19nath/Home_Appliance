@@ -24,6 +24,9 @@ const userItems = [
 // Dropdown items for a visitor who is not logged in
 const guestItems = [["/login", LogIn, "Login"], ["/register", UserPlus, "Register"]];
 
+// Pages that need a login (a visitor is sent to the login page)
+const PRIVATE = ["/profile", "/addresses", "/change-password", "/payment-methods"];
+
 // Left menu on phones: [section title, [path, icon, label, needs login]]
 const drawerPages = [
   ["Menu", [["/", Home, "Home"], ["/shop", ShoppingBag, "Shop"], ["/categories", LayoutGrid, "Categories"], ["/about", Info, "About Us"], ["/contact", Phone, "Contact Us"], ["/faq", HelpCircle, "FAQ"]]],
@@ -44,6 +47,7 @@ function Navbar() {
 
   // Admin button is shown only after a successful admin login
   const isAdmin = !!localStorage.getItem("adminToken") && localStorage.getItem("adminRole") === "admin";
+  const loggedIn = Boolean(currentUser) || isAdmin; // customer or admin
 
   // Refresh the login after every page change and when login/logout happens (same tab or other tab)
   useEffect(() => {
@@ -56,6 +60,11 @@ function Navbar() {
       window.removeEventListener("homehub-auth-changed", update);
       window.removeEventListener("storage", update);
     };
+  }, [pathname]);
+
+  // Account pages are hidden from visitors who are not logged in
+  useEffect(() => {
+    if (PRIVATE.includes(pathname) && !getUser() && !isAdmin) navigate("/login", { replace: true });
   }, [pathname]);
 
   // Close the account dropdown when clicking outside it
@@ -190,10 +199,12 @@ function Navbar() {
               {cartItemCount > 0 && <span>{cartItemCount}</span>}
             </NavLink>
 
-            {/* PROFILE */}
-            <NavLink to="/profile" className={actionClass("profile-button")} title="Profile">
-              <UserCircle size={35} />
-            </NavLink>
+            {/* PROFILE (hidden until a customer or admin is logged in) */}
+            {loggedIn && (
+              <NavLink to="/profile" className={actionClass("profile-button")} title="Profile">
+                <UserCircle size={35} />
+              </NavLink>
+            )}
 
             {/* COLOUR MODE: light, dark or default */}
             <ThemeToggle />
@@ -255,7 +266,7 @@ function Navbar() {
                 <span>{currentUser?.email || "Login to see your orders"}</span>
               </div>
             </div>
-            {!currentUser && (
+            {!loggedIn && (
               <div className="drawer-auth">
                 <Link to="/login">Login</Link>
                 <Link to="/register">Register</Link>
@@ -275,7 +286,7 @@ function Navbar() {
               <Fragment key={title}>
                 <div className="drawer-section">
                   <h4>{title}</h4>
-                  {items.filter((item) => !item[3] || currentUser).map(([path, Icon, label]) => (
+                  {items.filter((item) => !item[3] || loggedIn).map(([path, Icon, label]) => (
                     <NavLink key={path} to={path} end={path === "/"} className={({ isActive }) => `drawer-link${isActive ? " active" : ""}`}>
                       <Icon size={21} />
                       <span>{label}</span>
@@ -299,7 +310,7 @@ function Navbar() {
               </Fragment>
             ))}
 
-            {currentUser && (
+            {loggedIn && (
               <button type="button" className="drawer-logout" onClick={logout}>
                 <LogOut size={20} />
                 Logout
