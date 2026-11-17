@@ -1,47 +1,76 @@
 /* =========================================================
-   COLORS.CSS - colourful, clean look for every page (computer and phone)
+   COLORS.CSS - colourful, clean look for every page (computer and phone, light and dark mode)
    Dark mode flips these colours automatically (see darkmode.css), so only the light colours are written here.
 ========================================================= */
-:root { --blue: #087ee8; --orange: #ff9d00; --green: #16a05a; --purple: #7c3aed; }
+:root { --blue: #087ee8; --sky: #17a2f0; --orange: #ff9d00; --coral: #ff416c; --green: #16a05a; --teal: #0fb5a8; --purple: #7c3aed; --pink: #e5367d; }
 
 /* ---------- basics ---------- */
 html { scroll-behavior: smooth; scrollbar-color: #8cc4f5 #eef6fd; }
-html body { background: linear-gradient(180deg, #eaf5ff 0, #fff 480px); }
+html body { background: radial-gradient(900px 420px at 0% 0%, #dcefff 0, transparent 70%), radial-gradient(800px 380px at 100% 6%, #ffe9cf 0, transparent 70%), linear-gradient(180deg, #f1f8ff 0, #fff 720px); background-repeat: no-repeat; }
 ::selection { background: #ffd28a; color: #071a2e; }
 html :is(a, button):focus-visible { outline: 3px solid rgba(8, 126, 232, 0.5); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { html *, html *::before, html *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
 
 /* ---------- navbar and footer ---------- */
-html .navbar { background: linear-gradient(135deg, #071a2e 0%, #0a2f57 100%); box-shadow: 0 3px 0 var(--orange), 0 8px 20px rgba(7, 26, 46, 0.25); }
-html .footer { background: linear-gradient(160deg, #071a2e, #0a3366); box-shadow: inset 0 4px 0 var(--orange); }
+html .navbar { background: linear-gradient(135deg, #071a2e 0%, #0b3a73 55%, #0a2f57 100%); box-shadow: 0 3px 0 var(--orange), 0 8px 20px rgba(7, 26, 46, 0.25); }
+html .nav-links a:hover { color: #ffb84d; }
+html .footer { background: linear-gradient(160deg, #071a2e, #0b3a73); box-shadow: inset 0 4px 0 var(--orange); }
+html .footer h4 { color: #ffb84d; }
 html .footer a:hover { color: var(--orange); }
+html .footer-social a:nth-child(1):hover { color: #ff5fa2; }
+html .footer-social a:nth-child(2):hover { color: #4c8dff; }
+html .footer-social a:nth-child(3):hover { color: #ff4b4b; }
 
-/* ---------- headings get an orange bar ---------- */
-html :is(.section-heading h2, .about-section-heading h2, .categories-section-header h2, .tracked-order-heading h2, .wishlist-page-title h1, .orders-content-header h2) { padding-left: 10px; border-left: 5px solid var(--orange); }
+/* ---------- headings: gradient text with an orange bar ---------- */
+html :is(.section-heading h2, .about-section-heading h2, .categories-section-header h2, .tracked-order-heading h2, .orders-content-header h2, .cart-heading h1, .shop-top h1, .wishlist-page-title h1) { padding-left: 12px; border-left: 5px solid var(--orange); background: linear-gradient(90deg, #087ee8, #7c3aed); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
 
-/* ---------- cards: coloured top line and a soft lift on hover ---------- */
-html :is(.product-card, .shop-product-card, .category-card, .order-card, .cart-product, .wishlist-product-card) { border-top: 3px solid var(--blue); box-shadow: 0 6px 18px rgba(8, 126, 232, 0.1); transition: transform 0.25s ease, box-shadow 0.25s ease; }
-html :is(.product-card, .shop-product-card, .category-card, .order-card, .cart-product, .wishlist-product-card):hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(8, 126, 232, 0.18); }
-html :is(.product-card, .shop-product-card, .category-card, .order-card):nth-child(4n + 2) { border-top-color: var(--orange); }
-html :is(.product-card, .shop-product-card, .category-card, .order-card):nth-child(4n + 3) { border-top-color: var(--green); }
-html :is(.product-card, .shop-product-card, .category-card, .order-card):nth-child(4n) { border-top-color: var(--purple); }
+/* ---------- cards: coloured top line, soft tint, lift on hover ---------- */
+html :is(.product-card, .shop-product-card, .category-card, .order-card, .cart-product, .wishlist-product-card) { border-top: 3px solid var(--blue); background: linear-gradient(180deg, #fff 0, #f2f8ff 100%); box-shadow: 0 6px 18px rgba(8, 126, 232, 0.1); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+html :is(.product-card, .shop-product-card, .category-card, .order-card, .cart-product, .wishlist-product-card):hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(8, 126, 232, 0.2); }
+html :is(.product-card, .shop-product-card, .category-card, .order-card):nth-child(4n + 2) { border-top-color: var(--orange); background: linear-gradient(180deg, #fff 0, #fff6e8 100%); }
+html :is(.product-card, .shop-product-card, .category-card, .order-card):nth-child(4n + 3) { border-top-color: var(--green); background: linear-gradient(180deg, #fff 0, #eaf9f0 100%); }
+html :is(.product-card, .shop-product-card, .category-card, .order-card):nth-child(4n) { border-top-color: var(--purple); background: linear-gradient(180deg, #fff 0, #f4edff 100%); }
 
 /* ---------- info boxes (About, Contact, service bar) in four soft colours ---------- */
-html :is(.about-value-card, .contact-info-card):nth-child(4n + 1) { border-color: #a8d3f5; background: linear-gradient(135deg, #e8f4ff, #fff); }
-html :is(.about-value-card, .contact-info-card):nth-child(4n + 2) { border-color: #ffd9a1; background: linear-gradient(135deg, #fff3e0, #fff); }
-html :is(.about-value-card, .contact-info-card):nth-child(4n + 3) { border-color: #b4e5c8; background: linear-gradient(135deg, #e8f8ef, #fff); }
-html :is(.about-value-card, .contact-info-card):nth-child(4n) { border-color: #d9c6f7; background: linear-gradient(135deg, #f3e8ff, #fff); }
-html .service-bar { background: linear-gradient(135deg, #e6f3ff, #fff2dd); }
+html :is(.about-value-card, .contact-info-card, .service-item):nth-child(4n + 1) { border-color: #a8d3f5; background: linear-gradient(135deg, #e4f2ff, #fff); }
+html :is(.about-value-card, .contact-info-card, .service-item):nth-child(4n + 2) { border-color: #ffd9a1; background: linear-gradient(135deg, #ffefd9, #fff); }
+html :is(.about-value-card, .contact-info-card, .service-item):nth-child(4n + 3) { border-color: #b4e5c8; background: linear-gradient(135deg, #e3f7ec, #fff); }
+html :is(.about-value-card, .contact-info-card, .service-item):nth-child(4n) { border-color: #d9c6f7; background: linear-gradient(135deg, #f0e6ff, #fff); }
+html .service-bar { background: linear-gradient(135deg, #dcefff, #ffe9cf); }
 html .service-item:nth-child(4n + 1) .service-icon { color: var(--blue); }
 html .service-item:nth-child(4n + 2) .service-icon { color: #f08a00; }
 html .service-item:nth-child(4n + 3) .service-icon { color: var(--green); }
 html .service-item:nth-child(4n) .service-icon { color: var(--purple); }
 
-/* ---------- buttons ---------- */
-html :is(.shop-btn, .explore-btn, .add-cart, .shop-add-cart, .checkout-btn, .place-order-btn, .checkout-next-btn, .login-button, .update-password-button, .contact-submit-btn, .save-address-btn, .address-save-btn, .success-shopping-btn, .track-order-main-button, .order-success-primary) { background: linear-gradient(135deg, #0a6fd1, #17a2f0); color: #fff; box-shadow: 0 6px 16px rgba(10, 111, 209, 0.28); transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease; }
-html :is(.shop-btn, .explore-btn, .add-cart, .shop-add-cart, .checkout-btn, .place-order-btn, .checkout-next-btn, .login-button, .update-password-button, .contact-submit-btn, .save-address-btn, .address-save-btn, .success-shopping-btn, .track-order-main-button, .order-success-primary):hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.07); box-shadow: 0 10px 22px rgba(10, 111, 209, 0.35); }
-html :is(.discount, .product-discount) { background: linear-gradient(135deg, #ff9d00, #ff6a00); color: #fff; }
+/* ---------- buttons: blue = go on, orange = shop, green = pay, purple = buy now ---------- */
+html :is(.explore-btn, .login-button, .update-password-button, .contact-submit-btn, .save-address-btn, .address-save-btn, .success-shopping-btn, .track-order-main-button, .checkout-next-btn, .order-success-primary) { background: linear-gradient(135deg, #0a6fd1, #17a2f0); color: #fff; }
+html :is(.shop-btn, .add-cart, .add-to-cart, .shop-add-cart, .add-cart-button, .add-all-cart, .product-card :is(.cart-btn, .add-btn)) { background: linear-gradient(135deg, #ff9d00, #ff6a00); color: #fff; }
+html :is(.checkout-btn, .place-order-btn) { background: linear-gradient(135deg, #16a05a, #0d8a4a); color: #fff; }
+html .buy-now-button { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; }
+html :is(.explore-btn, .login-button, .update-password-button, .contact-submit-btn, .save-address-btn, .address-save-btn, .success-shopping-btn, .track-order-main-button, .checkout-next-btn, .order-success-primary, .shop-btn, .add-cart, .add-to-cart, .shop-add-cart, .add-cart-button, .add-all-cart, .checkout-btn, .place-order-btn, .buy-now-button) { box-shadow: 0 6px 16px rgba(10, 60, 120, 0.25); transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease; }
+html :is(.explore-btn, .login-button, .update-password-button, .contact-submit-btn, .save-address-btn, .address-save-btn, .success-shopping-btn, .track-order-main-button, .checkout-next-btn, .order-success-primary, .shop-btn, .add-cart, .add-to-cart, .shop-add-cart, .add-cart-button, .add-all-cart, .checkout-btn, .place-order-btn, .buy-now-button):hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 10px 22px rgba(10, 60, 120, 0.35); }
+
+/* ---------- badges, hearts, steps, tabs ---------- */
+html :is(.discount, .product-discount) { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; }
 html :is(.discount, .wishlist-btn, .shop-wishlist, .gallery-dots) { z-index: 3; } /* stay above the product pictures (dark mode cut the badge) */
+html :is(.shop-wishlist, .wishlist-btn, .wishlist-product-heart, .details-wishlist-button) { color: var(--pink); }
+html .checkout-step.active > span { background: linear-gradient(135deg, #0a6fd1, #17a2f0); color: #fff; }
+html .checkout-step.completed > span { background: var(--green); color: #fff; }
+html :is(.order-summary, .checkout-summary) { background: linear-gradient(180deg, #fff3e2 0, #fff 140px); box-shadow: inset 0 4px 0 var(--orange), 0 8px 24px rgba(8, 126, 232, 0.12); }
+html .order-filters button.active { border-color: transparent; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; }
+html .faq-category-item.active { background: linear-gradient(90deg, #dcefff, #fff); }
+html .faq-item.open { border-left: 4px solid var(--orange); }
+html .login-left { background: linear-gradient(145deg, #e6f3ff 0%, #fff 55%, #ffeedb 100%); }
+html .login-switch button.active { background: linear-gradient(135deg, #0a6fd1, #17a2f0); color: #fff; }
+html .login-feature:nth-of-type(3) .login-feature-icon { background: #fff1e0; color: #f08a00; }
+html .login-feature:nth-of-type(4) .login-feature-icon { background: #e3f7ec; color: var(--green); }
+
+/* ---------- admin dashboard ---------- */
+html .admin-box { border-top: 4px solid var(--blue); }
+html .admin-box.requests { border-top-color: var(--orange); }
+html .admin-box.cats { border-top-color: var(--teal); }
+html .admin-box.users { border-top-color: var(--purple); }
+html .admin-table th { background: #e6f3ff; color: #12395c; }
 
 /* ---------- home slider: arrows, fade and swipe ---------- */
 html .hero-arrow { position: absolute; top: 50%; z-index: 5; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; transform: translateY(-50%); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%; background: rgba(255, 255, 255, 0.18); color: #fff; backdrop-filter: blur(4px); cursor: pointer; transition: 0.2s ease; }
@@ -61,7 +90,17 @@ html .live-tracking p, html .live-tracking small { margin: 6px 0 0; color: #5872
 html .live-map { position: relative; z-index: 0; isolation: isolate; height: 320px; margin-top: 10px; border-radius: 12px; }
 html.dark .live-map { filter: invert(1) hue-rotate(180deg); } /* the map keeps its normal colours in dark mode */
 
-/* ---------- phones: the slider arrows sit in the bottom corners, next to the dots ---------- */
+/* ---------- shop filters button (phones) ---------- */
+html .shop-filters { display: contents; } /* computers: the sidebar stays exactly where it was */
+html .shop-filter-toggle { display: none; }
+
+/* ---------- phones ---------- */
+@media (max-width: 900px) {
+  html .shop-filter-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 24px); margin: 12px; padding: 11px; border: 0; border-radius: 12px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; font-size: 15px; font-weight: 700; box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3); }
+  html .shop-filter-toggle span { min-width: 22px; padding: 1px 7px; border-radius: 12px; background: var(--orange); font-size: 12px; text-align: center; }
+  html .shop-filters { display: none; }
+  html .shop-filters.open { display: block; }
+}
 @media (max-width: 600px) {
   html .hero-arrow { top: auto; bottom: 6px; width: 34px; height: 34px; transform: none; }
   html .hero-prev { left: 12px; }

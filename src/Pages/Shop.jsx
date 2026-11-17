@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { SlidersHorizontal } from "lucide-react";
 import api from "../api";
 import useProducts from "../data/useProducts";
 import ShopSidebar from "../Components/ShopSidebar";
@@ -25,9 +26,13 @@ function Shop() {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedPrice, setSelectedPrice] = useState("");
   const [sort, setSort] = useState("Popularity");
+  const [showFilters, setShowFilters] = useState(false); // filter list on phones
 
   const search = (searchParams.get("search") || "").trim();
   const categoryFromURL = searchParams.get("category") || "";
+
+  // Number of filters in use (shown on the phone button)
+  const activeFilters = (selectedCategory ? 1 : 0) + selectedBrands.length + (selectedPrice ? 1 : 0);
 
   // Load the category names for the sidebar
   useEffect(() => {
@@ -72,18 +77,27 @@ function Shop() {
   return (
     <main className="shop-page">
 
-      {/* SIDEBAR */}
-      <ShopSidebar
-        categories={categories}
-        brands={brands}
-        priceRanges={Object.keys(priceFilters)}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        selectedBrands={selectedBrands}
-        setSelectedBrands={setSelectedBrands}
-        selectedPrice={selectedPrice}
-        setSelectedPrice={setSelectedPrice}
-      />
+      {/* FILTERS BUTTON (phones only) */}
+      <button type="button" className="shop-filter-toggle" onClick={() => setShowFilters((open) => !open)}>
+        <SlidersHorizontal size={18} />
+        {showFilters ? "Hide Filters" : "Filters"}
+        {activeFilters > 0 && <span>{activeFilters}</span>}
+      </button>
+
+      {/* SIDEBAR (on phones it opens and closes with the button) */}
+      <div className={`shop-filters ${showFilters ? "open" : ""}`}>
+        <ShopSidebar
+          categories={categories}
+          brands={brands}
+          priceRanges={Object.keys(priceFilters)}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          selectedBrands={selectedBrands}
+          setSelectedBrands={setSelectedBrands}
+          selectedPrice={selectedPrice}
+          setSelectedPrice={setSelectedPrice}
+        />
+      </div>
 
       {/* PRODUCTS */}
       <section className="shop-content">
