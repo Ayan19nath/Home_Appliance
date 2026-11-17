@@ -14,7 +14,7 @@ const empty = { cat_name: "", cat_description: "", cat_icon: "" };
 export default function AdminDashboard() {
   const [categories, setCategories] = useState([]);
   const [requests, setRequests] = useState([]);
-  const [me, setMe] = useState(null);         // the logged-in admin (email and verified status)
+  const [me, setMe] = useState(null);         // the logged-in admin (email, verified status, manage power)
   const [form, setForm] = useState(empty);
   const [image, setImage] = useState(null);   // image file chosen from the computer
   const [fileKey, setFileKey] = useState(0);  // changing this clears the file picker
@@ -22,8 +22,9 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Only the owner can see and handle admin requests
   const isOwner = localStorage.getItem("adminOwner") === "true";
+  // The owner, or an admin the owner gave the "manage admins" power, can handle admin requests
+  const canManage = isOwner || me?.canManageAdmins === true;
 
   // Load the lists (a failed load shows a message instead of an empty list)
   const loadCategories = () =>
@@ -34,8 +35,12 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     loadCategories();
-    api.get("/user/me").then((res) => setMe(res.data)).catch(() => {});
-    if (isOwner) loadRequests();
+    api.get("/user/me")
+      .then((res) => {
+        setMe(res.data);
+        if (isOwner || res.data.canManageAdmins) loadRequests();
+      })
+      .catch(() => {});
   }, [isOwner]);
 
   // Clear the form
@@ -85,7 +90,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // Approve or reject an admin request (owner only)
+  // Approve or reject an admin request (owner or admin manager)
   const decide = async (id, approve) => {
     if (!window.confirm(approve ? "Approve this person as admin?" : "Reject this request?")) return;
     try {
@@ -100,7 +105,7 @@ export default function AdminDashboard() {
 
   // Log out the admin
   const logout = () => {
-    ["adminToken", "adminRole", "adminOwner"].forEach((key) => localStorage.removeItem(key));
+    ["adminToken", "adminRole", "adminOwner", "adminUser"].forEach((key) => localStorage.removeItem(key));
     navigate("/login");
   };
 
@@ -120,12 +125,12 @@ export default function AdminDashboard() {
       {/* ========== STAT CARDS ========== */}
       <div className="admin-stats">
         <div className="admin-stat blue"><span>Categories</span><strong>{categories.length}</strong></div>
-        {isOwner && (
+        {canManage && (
           <div className={`admin-stat orange${requests.length ? " alert" : ""}`}>
             <span>Pending Requests</span><strong>{requests.length}</strong>
           </div>
         )}
-        <div className="admin-stat green"><span>Your Role</span><strong>{isOwner ? "Owner" : "Admin"}</strong></div>
+        <div className="admin-stat green"><span>Your Role</span><strong>{isOwner ? "Owner" : canManage ? "Admin Manager" : "Admin"}</strong></div>
       </div>
 
       {error && <p className="admin-error">{error}</p>}
@@ -136,8 +141,8 @@ export default function AdminDashboard() {
       {/* ========== COUPONS ========== */}
       <AdminCoupons />
 
-      {/* ========== ADMIN REQUESTS (owner only) ========== */}
-      {isOwner && (
+      {/* ========== ADMIN REQUESTS (owner or admin manager) ========== */}
+      {canManage && (
         <section className="admin-box requests">
           <h3>Admin Requests ({requests.length})</h3>
           <div className="admin-table-wrap">
@@ -218,7 +223,7 @@ export default function AdminDashboard() {
       </section>
 
       {/* ========== USERS ========== */}
-      <AdminUsers />
+      <AdminUsers isOwner={isOwner} canManage={canManage} myId={me?.id} />
 
       {/* ========== PRODUCTS ========== */}
       <AdminItems />

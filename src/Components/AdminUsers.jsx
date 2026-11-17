@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 
-export default function AdminUsers() {
+// isOwner = the main admin, canManage = owner or an admin with the "manage admins" power, myId = the logged-in admin
+export default function AdminUsers({ isOwner, canManage, myId }) {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
@@ -13,17 +14,32 @@ export default function AdminUsers() {
     load();
   }, []);
 
-  // Delete a user (the server blocks the owner, and only the owner can remove an admin)
-  const remove = async (u) => {
-    if (!window.confirm(`Delete ${u.Email}?`)) return;
+  // Run a server call, show any error, then reload the list
+  const run = async (call) => {
     try {
-      await api.delete(`/user/${u._id}`);
+      await call();
       setError("");
-      load();
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
     }
+    load();
   };
+
+  // Delete a user (the server checks the rules again)
+  const remove = (u) => window.confirm(`Delete ${u.Email}?`) && run(() => api.delete(`/user/${u._id}`));
+
+  // Give or take back the power to approve and remove admins (owner only)
+  const togglePower = (u) => {
+    const give = !u.canManageAdmins;
+    const text = give
+      ? `Let ${u.Email} approve admin requests and remove admins?`
+      : `Take back this power from ${u.Email}?`;
+    return window.confirm(text) && run(() => api.put(`/user/${u._id}/manage-admins`, { allow: give }));
+  };
+
+  // Who can be deleted: customers by every admin; admins by the owner, or by a manager (not another manager, not himself)
+  const canDelete = (u) =>
+    !u.isOwner && u._id !== myId && (u.role !== "admin" || isOwner || (canManage && !u.canManageAdmins));
 
   // Search by name or email
   const q = search.trim().toLowerCase();
@@ -33,6 +49,11 @@ export default function AdminUsers() {
     <section className="admin-box users">
       <h3>Users ({users.length})</h3>
       {error && <p className="admin-error">{error}</p>}
+      {isOwner && (
+        <p style={{ margin: "0 0 12px", color: "#667d91", fontSize: 13 }}>
+          Give power lets an admin approve admin requests and remove admins while you are away. You can take it back at any time.
+        </p>
+      )}
 
       <input
         style={{ width: "100%", marginBottom: 12, boxSizing: "border-box" }}
@@ -53,8 +74,15 @@ export default function AdminUsers() {
                 <td>{u.First_name} {u.Last_name}</td>
                 <td>{u.Email}</td>
                 <td>{u.Mobile}</td>
-                <td>{u.isOwner ? "Owner" : u.role}</td>
-                <td>{!u.isOwner && <button className="danger" onClick={() => remove(u)}>Delete</button>}</td>
+                <td>{u.isOwner ? "Owner" : u.role === "admin" && u.canManageAdmins ? "Admin (manager)" : u.role}</td>
+                <td>
+                  {isOwner && u.role === "admin" && !u.isOwner && (
+                    <button className="edit" onClick={() => togglePower(u)}>
+                      {u.canManageAdmins ? "Take back power" : "Give power"}
+                    </button>
+                  )}
+                  {canDelete(u) && <button className="danger" onClick={() => remove(u)}>Delete</button>}
+                </td>
               </tr>
             ))}
           </tbody>

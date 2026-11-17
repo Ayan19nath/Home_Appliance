@@ -1,57 +1,84 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-// Layout components
+// Layout components and the first page (always in the main file, so the site opens fast)
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import ProtectedRoute from "./Components/ProtectedRoute";
-
-// Shopping pages
+import RequireLogin from "./Components/RequireLogin";
 import Home from "./Pages/Home";
-import Shop from "./Pages/Shop";
-import Categories from "./Pages/Categories";
-import ProductDetails from "./Pages/ProductDetails";
-import Wishlist from "./Pages/Wishlist";
-import Cart from "./Pages/Cart";
-
-// Order pages
-import Checkout from "./Pages/Checkout";
-import Orders from "./Pages/Orders";
-import OrderSuccess from "./Pages/OrderSuccess";
-import OrderTracking from "./Pages/OrderTracking";
-import CancelOrder from "./Pages/CancelOrder";
-import CancelSuccess from "./Pages/CancelSuccess";
-
-// Account pages
-import Addresses from "./Pages/Addresses";
-import Profile from "./Pages/Profile";
-import ChangePassword from "./Pages/ChangePassword";
-
-// Info pages
-import About from "./Pages/About";
-import Contact from "./Pages/Contact";
-import FAQ from "./Pages/FAQ";
-
-// Login and password pages
-import Login from "./Pages/Login";
-import LoginSuccess from "./Pages/LoginSuccess";
-import Register from "./Pages/Register";
-import Logout from "./Pages/Logout";
-import ForgotPassword from "./Pages/ForgotPassword";
-import VerifyOTP from "./Pages/VerifyOTP";
-import ResetPassword from "./Pages/ResetPassword";
-
-// Policy pages
-import PrivacyPolicy from "./Pages/PrivacyPolicy";
-import TermsConditions from "./Pages/TermsConditions";
-import ReturnPolicy from "./Pages/ReturnPolicy";
-
-// Admin pages
-import AdminRequest from "./Pages/AdminRequest";
-import AdminDashboard from "./Pages/AdminDashboard";
 
 // Cart and wishlist data shared by all pages
 import { WishlistProvider } from "./Context/WishlistContext";
 import { CartProvider } from "./Context/CartContext";
+
+// Every other page loads only when it is opened. If a new version was published meanwhile,
+// the page reloads once to get the new files.
+const page = (load) =>
+  lazy(() =>
+    load()
+      .then((module) => {
+        sessionStorage.removeItem("page-reloaded");
+        return module;
+      })
+      .catch(() => {
+        if (!sessionStorage.getItem("page-reloaded")) {
+          sessionStorage.setItem("page-reloaded", "1");
+          window.location.reload();
+        }
+        return new Promise(() => {});
+      })
+  );
+
+// Shopping pages
+const Shop = page(() => import("./Pages/Shop"));
+const Categories = page(() => import("./Pages/Categories"));
+const ProductDetails = page(() => import("./Pages/ProductDetails"));
+const Wishlist = page(() => import("./Pages/Wishlist"));
+const Cart = page(() => import("./Pages/Cart"));
+
+// Order pages
+const Checkout = page(() => import("./Pages/Checkout"));
+const Orders = page(() => import("./Pages/Orders"));
+const OrderSuccess = page(() => import("./Pages/OrderSuccess"));
+const OrderTracking = page(() => import("./Pages/OrderTracking"));
+const CancelOrder = page(() => import("./Pages/CancelOrder"));
+const CancelSuccess = page(() => import("./Pages/CancelSuccess"));
+
+// Account pages
+const Addresses = page(() => import("./Pages/Addresses"));
+const Profile = page(() => import("./Pages/Profile"));
+const ChangePassword = page(() => import("./Pages/ChangePassword"));
+
+// Info pages
+const About = page(() => import("./Pages/About"));
+const Contact = page(() => import("./Pages/Contact"));
+const FAQ = page(() => import("./Pages/FAQ"));
+
+// Login and password pages
+const Login = page(() => import("./Pages/Login"));
+const LoginSuccess = page(() => import("./Pages/LoginSuccess"));
+const Register = page(() => import("./Pages/Register"));
+const Logout = page(() => import("./Pages/Logout"));
+const ForgotPassword = page(() => import("./Pages/ForgotPassword"));
+const VerifyOTP = page(() => import("./Pages/VerifyOTP"));
+const ResetPassword = page(() => import("./Pages/ResetPassword"));
+
+// Policy pages
+const PrivacyPolicy = page(() => import("./Pages/PrivacyPolicy"));
+const TermsConditions = page(() => import("./Pages/TermsConditions"));
+const ReturnPolicy = page(() => import("./Pages/ReturnPolicy"));
+
+// Admin pages
+const AdminRequest = page(() => import("./Pages/AdminRequest"));
+const AdminDashboard = page(() => import("./Pages/AdminDashboard"));
+
+// Shown for a moment while a page is loading
+const Loading = () => (
+  <div style={{ minHeight: "50vh", display: "grid", placeItems: "center", color: "#087ee8", fontWeight: 600 }}>
+    Loading...
+  </div>
+);
 
 function App() {
   return (
@@ -60,57 +87,59 @@ function App() {
         <BrowserRouter>
           <Navbar />
 
-          <Routes>
-            {/* Shopping */}
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/cart" element={<Cart />} />
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              {/* Shopping */}
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/cart" element={<Cart />} />
 
-            {/* Orders */}
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
-            <Route path="/order-tracking" element={<OrderTracking />} />
-            <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
-            <Route path="/cancel-order/:orderId" element={<CancelOrder />} />
-            <Route path="/cancel-success/:orderId" element={<CancelSuccess />} />
+              {/* Orders */}
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
+              <Route path="/order-tracking" element={<OrderTracking />} />
+              <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
+              <Route path="/cancel-order/:orderId" element={<CancelOrder />} />
+              <Route path="/cancel-success/:orderId" element={<CancelSuccess />} />
 
-            {/* Account */}
-            <Route path="/addresses" element={<Addresses />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/payment-methods" element={<Profile />} />
-            <Route path="/change-password" element={<ChangePassword />} />
+              {/* Account (only for a logged-in customer or admin) */}
+              <Route path="/addresses" element={<RequireLogin><Addresses /></RequireLogin>} />
+              <Route path="/profile" element={<RequireLogin><Profile /></RequireLogin>} />
+              <Route path="/payment-methods" element={<RequireLogin><Profile /></RequireLogin>} />
+              <Route path="/change-password" element={<RequireLogin><ChangePassword /></RequireLogin>} />
 
-            {/* Info */}
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faq" element={<FAQ />} />
+              {/* Info */}
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faq" element={<FAQ />} />
 
-            {/* Login and password */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/login-success" element={<LoginSuccess />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/logout" element={<Logout />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/verify-otp" element={<VerifyOTP />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+              {/* Login and password */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/login-success" element={<LoginSuccess />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/verify-otp" element={<VerifyOTP />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* Policies */}
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-conditions" element={<TermsConditions />} />
-            <Route path="/return-policy" element={<ReturnPolicy />} />
+              {/* Policies */}
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-conditions" element={<TermsConditions />} />
+              <Route path="/return-policy" element={<ReturnPolicy />} />
 
-            {/* Admin (admin login is on /login, the dashboard only opens after admin login) */}
-            <Route path="/admin/login" element={<Navigate to="/login" replace />} />
-            <Route path="/admin/request" element={<AdminRequest />} />
-            <Route
-              path="/admin/dashboard"
-              element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}
-            />
-          </Routes>
+              {/* Admin (admin login is on /login, the dashboard only opens after admin login) */}
+              <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+              <Route path="/admin/request" element={<AdminRequest />} />
+              <Route
+                path="/admin/dashboard"
+                element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}
+              />
+            </Routes>
+          </Suspense>
 
           <Footer />
         </BrowserRouter>
