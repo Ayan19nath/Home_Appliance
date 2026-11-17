@@ -80,6 +80,9 @@ const Loading = () => (
   </div>
 );
 
+// Short name: opens the page only for a logged-in customer or admin (a visitor is sent to the login page)
+const login = (element) => <RequireLogin>{element}</RequireLogin>;
+
 function App() {
   return (
     <CartProvider>
@@ -89,7 +92,7 @@ function App() {
 
           <Suspense fallback={<Loading />}>
             <Routes>
-              {/* Shopping */}
+              {/* Shopping (open to everybody) */}
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/categories" element={<Categories />} />
@@ -97,20 +100,20 @@ function App() {
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/cart" element={<Cart />} />
 
-              {/* Orders */}
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/order-success" element={<OrderSuccess />} />
-              <Route path="/order-tracking" element={<OrderTracking />} />
-              <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
-              <Route path="/cancel-order/:orderId" element={<CancelOrder />} />
-              <Route path="/cancel-success/:orderId" element={<CancelSuccess />} />
+              {/* Orders (login needed) */}
+              <Route path="/checkout" element={login(<Checkout />)} />
+              <Route path="/orders" element={login(<Orders />)} />
+              <Route path="/order-success" element={login(<OrderSuccess />)} />
+              <Route path="/order-tracking" element={login(<OrderTracking />)} />
+              <Route path="/order-tracking/:orderId" element={login(<OrderTracking />)} />
+              <Route path="/cancel-order/:orderId" element={login(<CancelOrder />)} />
+              <Route path="/cancel-success/:orderId" element={login(<CancelSuccess />)} />
 
-              {/* Account (only for a logged-in customer or admin) */}
-              <Route path="/addresses" element={<RequireLogin><Addresses /></RequireLogin>} />
-              <Route path="/profile" element={<RequireLogin><Profile /></RequireLogin>} />
-              <Route path="/payment-methods" element={<RequireLogin><Profile /></RequireLogin>} />
-              <Route path="/change-password" element={<RequireLogin><ChangePassword /></RequireLogin>} />
+              {/* Account (login needed) */}
+              <Route path="/addresses" element={login(<Addresses />)} />
+              <Route path="/profile" element={login(<Profile />)} />
+              <Route path="/payment-methods" element={login(<Profile />)} />
+              <Route path="/change-password" element={login(<ChangePassword />)} />
 
               {/* Info */}
               <Route path="/about" element={<About />} />
