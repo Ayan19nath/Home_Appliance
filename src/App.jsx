@@ -73,6 +73,9 @@ const ReturnPolicy = page(() => import("./Pages/ReturnPolicy"));
 const AdminRequest = page(() => import("./Pages/AdminRequest"));
 const AdminDashboard = page(() => import("./Pages/AdminDashboard"));
 
+// Shopping assistant chat bubble (loads in the background, after the page)
+const AssistantChat = page(() => import("./Components/AssistantChat"));
+
 // Shown for a moment while a page is loading
 const Loading = () => (
   <div style={{ minHeight: "50vh", display: "grid", placeItems: "center", color: "#087ee8", fontWeight: 600 }}>
@@ -145,6 +148,11 @@ function App() {
           </Suspense>
 
           <Footer />
+
+          {/* Chat bubble (stays on screen while the customer moves between pages) */}
+          <Suspense fallback={null}>
+            <AssistantChat />
+          </Suspense>
         </BrowserRouter>
       </WishlistProvider>
     </CartProvider>
